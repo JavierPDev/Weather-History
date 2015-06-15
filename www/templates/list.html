@@ -1,0 +1,40 @@
+<ion-view title="{{city+', '+country}}">
+  <ion-nav-buttons>
+    <button menu-toggle="left" class="button button-icon icon ion-navicon"></button>
+  </ion-nav-buttons>
+
+  <!-- Enable ionic native scroll: http://blog.ionic.io/native&#45;scrolling&#45;in&#45;ionic&#45;a&#45;tale&#45;in&#45;rhyme/ -->
+  <ion-content overflow-scroll=”true” class="has-header">
+    <div class="list list-inset">
+      <label class="item item-input">
+        <i class="icon ion-search placeholder-icon"></i>
+        <input type="text" ng-autocomplete ng-model="place.place" details="place.details">
+      </label>
+    </div>
+
+    <ion-list>
+      <ion-item class="card" ng-repeat="forecast in list track by $index" href="#/app/list/{{forecast.currently.time}}">
+        <p>
+          <i class="wi wi-sleet"></i>{{forecast.currently.temperature}}
+        </p>
+        <p>
+          {{forecast.year}}
+          <br>
+          Temp: {{forecast.currently.temperature}}
+          <br>
+          Windspeed: {{forecast.currently.windSpeed}}
+          <br>
+          Wind bearing: {{forecast.currently.windBearing}}
+          <br>
+          Humidity: {{forecast.currently.humidity}}%
+          <br>
+          Precipitation: {{forecast.currently.precipProbability}}
+        </p>
+      </ion-item>
+    </ion-list>
+
+    <ion-infinite-scroll on-infinite="loadData()">
+    </ion-infinite-scroll>
+  </ion-content>
+</ion-view>
+

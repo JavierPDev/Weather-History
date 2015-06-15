@@ -1,0 +1,47 @@
+<ion-side-menus>
+  <ion-side-menu-content>
+    <ion-nav-bar class="bar-stable">
+    </ion-nav-bar>
+    
+    <ion-nav-view name="content" animation="slide-left-right"></ion-nav-view>
+  </ion-side-menu-content>
+
+  <ion-side-menu side="left">
+    <header class="bar bar-header bar-stable">
+      <h1 class="title">Settings</h1>
+    </header>
+
+    <ion-content class="has-header">
+      <ion-list>
+        <ion-item>
+          <label class="item item-input item-select">
+            <div class="input-label">
+              Date format
+            </div>
+            <select ng-options="dateFormat for dateFormat in options.dateFormat" ng-model="selected.dateFormat" ng-change="saveNewSettings({dateFormat: selected.dateFormat})">
+            </select>
+          </label>
+        </ion-item>
+        <ion-item>
+          <label class="item item-input item-select">
+            <div class="input-label">
+              Unit type:
+            </div>
+            <select ng-options="units for units in options.units" ng-model="selected.units" ng-change="saveNewSettings({units: selected.units})">
+            </select>
+          </label>
+        </ion-item>
+        <ion-item>
+          <label class="item item-input item-select">
+            <div class="input-label">
+              Interval:
+            </div>
+            <select ng-options="interval for interval in options.interval" ng-model="selected.interval" ng-change="saveNewSettings({interval: selected.interval})">
+            </select>
+          </label>
+        </ion-item>
+      </ion-list>
+    </ion-content>
+  </ion-side-menu>
+</ion-side-menus>
+
