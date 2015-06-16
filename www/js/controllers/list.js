@@ -2,6 +2,7 @@ angular.module('weatherHistory.controllers')
 .controller('ListCtrl', function($scope, $timeout, $filter, $cordovaDatePicker, settingsFactory, geocoder, forecastFactory) {
   $scope.place = { place: null, details: {} };
   $scope.loadData = loadData;
+  $scope.reloadData = reloadData;
   $scope.list = [];
   $scope.date = settingsFactory.startTime;
   var hintShown = false,
@@ -63,13 +64,15 @@ angular.module('weatherHistory.controllers')
   }
 
   /**
-   * Reload data. Reset backcasts and its expected length and then load data. Used when
+   * Reload data. Reset list and its expected length, clear cache, and then load data. Used when
    * settings change.
    */
   function reloadData() {
     $scope.list = [];
     expectedLength = 3;
+    forecastFactory.clearCache();
     loadData();
+    $scope.$broadcast('scroll.refreshComplete');
   }
 
   /**
