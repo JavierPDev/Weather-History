@@ -29,6 +29,13 @@ angular.module('weatherHistory.services')
   }
 
   /**
+   * Clear forecast cache so fresh data can be available.
+   */
+  function clearCache() {
+    forecastCache.removeAll();
+  }
+
+  /**
    * Serialize an object into a query paramater string or return empty string. Non-recursive.
    *
    * @param {Object} query - Query paramaters in key/value pairs
@@ -52,7 +59,8 @@ angular.module('weatherHistory.services')
   }
 
   return {
-    getForecast: getForecast
+    getForecast: getForecast,
+    clearCache: clearCache
   };
 });
 
