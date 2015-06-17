@@ -1,4 +1,11 @@
-angular.module('weatherHistory', ['ionic', 'ngCordova', 'angular-cache', 'ngAutocomplete', 'weatherHistory.controllers', 'weatherHistory.services'])
+angular.module('weatherHistory', [
+    'ionic',
+    'ngCordova',
+    'angular-cache',
+    'ngAutocomplete',
+    'weatherHistory.controllers',
+    'weatherHistory.services'
+])
 
 .constant('FORECASTIO_API_KEY', '9e9741e9fd11d5fb18ec7986f6f5d5ec')
 
