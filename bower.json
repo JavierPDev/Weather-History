@@ -2,7 +2,7 @@
   "name": "weather-backcast",
   "private": "true",
   "devDependencies": {
-    "ionic": "driftyco/ionic-bower#1.0.0-beta.13"
+    "ionic": "~1.0.0"
   },
   "dependencies": {
     "ngCordova": "~0.1.15-alpha",
