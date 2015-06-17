@@ -16,7 +16,7 @@
     </div>
 
     <ion-list>
-      <ion-item class="card" ng-repeat="forecast in list track by $index" href="#/app/list/{{forecast.currently.time}}">
+      <ion-item class="card" collection-repeat="forecast in list track by $index" href="#/app/list/{{forecast.currently.time}}">
         <p>
           <i class="wi wi-sleet"></i>{{forecast.currently.temperature}}
         </p>
