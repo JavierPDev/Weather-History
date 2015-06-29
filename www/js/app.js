@@ -3,6 +3,7 @@ angular.module('weatherHistory', [
     'ngCordova',
     'angular-cache',
     'ngAutocomplete',
+    '720kb.datepicker',
     'weatherHistory.controllers',
     'weatherHistory.services'
 ])

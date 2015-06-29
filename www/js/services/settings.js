@@ -1,18 +1,21 @@
 angular.module('weatherHistory.services')
 .factory('settingsFactory', function($q, $cordovaGeolocation, geocoder) {
   var settings = window.localStorage['settings'],
-    startTime = new Date(),
+    // Start date of app
+    date = new Date(),
     deferredSettings = $q.defer();
 
   // Use saved settings or create new ones if they don't exist
   if (settings) {
     settings = JSON.parse(settings);
+    settings.date = new Date();
     deferredSettings.resolve(settings);
   } else {
     // Settings object
     settings = {
       city: '',
       country: '',
+      date: new Date(),
       dateFormat: '',
       interval: 1,
       latitute: 0,
@@ -95,7 +98,7 @@ angular.module('weatherHistory.services')
   return {
     getDeferred: getDeferred,
     set: set,
-    startTime: startTime,
+    date: date,
     options: {
       dateFormat: ['MM/DD', 'DD/MM'],
       interval: [1, 5, 10],
