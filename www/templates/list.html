@@ -5,7 +5,7 @@
 
   <!-- Enable ionic native scroll: http://blog.ionic.io/native&#45;scrolling&#45;in&#45;ionic&#45;a&#45;tale&#45;in&#45;rhyme/ -->
   <ion-content overflow-scroll=”true” class="has-header">
-    <ion-refresher on-refresh="reloadData()">
+    <ion-refresher on-refresh="reloadData(true)">
     </ion-refresher>
 
     <div class="list list-inset">
@@ -13,6 +13,10 @@
         <i class="icon ion-search placeholder-icon"></i>
         <input type="text" ng-autocomplete ng-model="place.place" details="place.details">
       </label>
+    </div>
+
+    <div ng-controller="DatepickerModalCtrl as datepickerModal" class="list list-inset">
+      <button ng-click="datepickerModal.openModal()" class="button">{{formattedDate}}</button>
     </div>
 
     <ion-list>
@@ -36,7 +40,7 @@
       </ion-item>
     </ion-list>
 
-    <ion-infinite-scroll on-infinite="loadData()">
+    <ion-infinite-scroll on-infinite="loadData()" immediate-check="false">
     </ion-infinite-scroll>
   </ion-content>
 </ion-view>
