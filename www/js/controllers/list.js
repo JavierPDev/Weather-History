@@ -1,18 +1,19 @@
 angular.module('weatherHistory.controllers')
-.controller('ListCtrl', function($scope, $timeout, $filter, $cordovaDatePicker, settingsFactory, geocoder, forecastFactory) {
+.controller('ListCtrl', function($scope, $filter, settingsFactory, geocoder, forecastFactory) {
   $scope.place = { place: null, details: {} };
   $scope.loadData = loadData;
   $scope.reloadData = reloadData;
+  $scope.models = { date: forecastFactory.date };
   $scope.list = [];
-  $scope.date = settingsFactory.startTime;
-  var hintShown = false,
-    expectedLength = 3,
+  var expectedLength = 3,
     LENGTH = 3;
 
 
   $scope.$on('list:reload', reloadData);
+  $scope.$on('$stateChangeSuccess', reloadData);
   $scope.$watch('list.length', orderList);
   $scope.$watch('place.details', getNewPlace);
+  $scope.$watch('models.date', getNewDate);
 
 
   /**
@@ -24,10 +25,12 @@ angular.module('weatherHistory.controllers')
       .then(function(settings) {
         $scope.city = settings.city;
         $scope.country = settings.country;
+        $scope.dateFormat = settings.dateFormat;
+        $scope.formattedDate = moment(settings.date).format(settings.dateFormat);
         var oldLength = $scope.list.length;
 
         for (var i = 0; i < LENGTH; i++) {
-          var time = moment($scope.date).subtract(oldLength + i, 'years').unix();
+          var time = moment(settings.date).subtract(oldLength + i, 'years').unix();
           forecastFactory.getForecast(settings.latitude, settings.longitude, time, settings)
             .then(handleData);
         }
@@ -55,9 +58,6 @@ angular.module('weatherHistory.controllers')
       if (newLength === expectedLength) {
         expectedLength = expectedLength + LENGTH;
         $scope.list = $filter('orderBy')($scope.list, 'year', true);
-
-        // orderList() ends up being called after api calls are done so this should be put here
-        // especially since list is reordered just above 
         $scope.$broadcast('scroll.infiniteScrollComplete');
       }
     }
@@ -65,14 +65,21 @@ angular.module('weatherHistory.controllers')
 
   /**
    * Reload data. Reset list and its expected length, clear cache, and then load data. Used when
-   * settings change.
+   * setting, date, or place change.
+   *
+   * @param {Boolean} pulledToRefresh - True if using pull to refresh directive
    */
-  function reloadData() {
+  function reloadData(pulledToRefresh) {
     $scope.list = [];
-    expectedLength = 3;
+    expectedLength = LENGTH;
     forecastFactory.clearCache();
     loadData();
-    $scope.$broadcast('scroll.refreshComplete');
+
+    // Make conditional since it uses javascript to scroll which triggers infinite scroll to
+    // call its method (meaning data is duplicated).
+    if (pulledToRefresh) {
+      $scope.$broadcast('scroll.refreshComplete');
+    }
   }
 
   /**
@@ -93,12 +100,27 @@ angular.module('weatherHistory.controllers')
         latitude: $scope.latitude,
         longitude: $scope.longitude
       });
-      $scope.list = [];
-      expectedLength = LENGTH;
-      loadData();
+      reloadData();
       $scope.place.place = '';
     }
   }
 
+  /**
+   * Watch function to handle getting new date from datepicker, closing the modal, and 
+   * getting weather with new date.
+   *
+   * @param {Date} newDate - New date input
+   * @param {Date} oldDate - Old date input
+   */
+  function getNewDate(newDate, oldDate) {
+    if (newDate !== oldDate) {
+      // TODO: Doesn't close when picking same day after changing months
+      if (moment(newDate).isSame(oldDate, 'month')) {
+        settingsFactory.set({date: newDate});
+        reloadData();
+        $scope.$broadcast('DatepickerModal:closeModal');
+      }
+    }
+  }
 });
 
