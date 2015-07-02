@@ -47,7 +47,7 @@ angular.module('weatherHistory.controllers')
   }
 
   /**
-   * Watch to see when api calls are done and list is full of new data.
+   * Watch to see when api calls are done and list is full of new data. Orders only new data.
    *
    * @param {Number} newLength - New length
    * @param {Number} oldLength - Old length
@@ -55,8 +55,10 @@ angular.module('weatherHistory.controllers')
   function orderList(newLength, oldLength) {
     if (newLength !== oldLength) {
       if (newLength === expectedLength) {
+        var recentlyAdded = $scope.list.splice(newLength - LENGTH, LENGTH);
+        recentlyAdded = $filter('orderBy')(recentlyAdded, 'year', true);
+        $scope.list = $scope.list.concat(recentlyAdded);
         expectedLength = expectedLength + LENGTH;
-        $scope.list = $filter('orderBy')($scope.list, 'year', true);
         $scope.$broadcast('scroll.infiniteScrollComplete');
       }
     }
