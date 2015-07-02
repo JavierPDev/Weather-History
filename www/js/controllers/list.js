@@ -1,9 +1,13 @@
 angular.module('weatherHistory.controllers')
 .controller('ListCtrl', function($scope, $filter, settingsFactory, geocoder, forecastFactory) {
-  $scope.place = { place: null, details: {} };
   $scope.loadData = loadData;
   $scope.reloadData = reloadData;
-  $scope.models = { date: forecastFactory.date };
+  $scope.models = {
+    date: forecastFactory.date,
+    place: {
+      details: {},
+      place: null
+    }};
   $scope.list = [];
   var expectedLength = 3,
     LENGTH = 3;
@@ -12,7 +16,7 @@ angular.module('weatherHistory.controllers')
   $scope.$on('list:reload', reloadData);
   $scope.$on('$stateChangeSuccess', reloadData);
   $scope.$watch('list.length', orderList);
-  $scope.$watch('place.details', getNewPlace);
+  $scope.$watch('models.place.details', getNewPlace);
   $scope.$watch('models.date', getNewDate);
 
 
@@ -102,7 +106,7 @@ angular.module('weatherHistory.controllers')
         longitude: $scope.longitude
       });
       reloadData();
-      $scope.place.place = '';
+      $scope.models.place.place = '';
     }
   }
 
