@@ -25,7 +25,6 @@ angular.module('weatherHistory.controllers')
       .then(function(settings) {
         $scope.city = settings.city;
         $scope.country = settings.country;
-        $scope.dateFormat = settings.dateFormat;
         $scope.formattedDate = moment(settings.date).format(settings.dateFormat);
         var oldLength = $scope.list.length;
 
