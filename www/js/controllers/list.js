@@ -47,6 +47,7 @@ angular.module('weatherHistory.controllers')
    */
   function handleData(forecast) {
     forecast.data.year = parseInt(moment.unix(forecast.data.currently.time).format('YYYY'), 10);
+    forecast.data.currently.icon = forecastFactory.renameIcons(forecast.data.currently.icon);
     $scope.list.push(forecast.data);
   }
 

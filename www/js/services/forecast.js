@@ -58,9 +58,26 @@ angular.module('weatherHistory.services')
     return '&units='+query.units;
   }
 
+  /**
+   * Method for renaming icon strings from forecast.io to fit weather icons set.
+   *
+   * @param {String} iconStr - String representing what icon to display. From forecast.io
+   * @return {String} iconStr - String representing what icon to display. Modified for icon set
+   */
+  function renameIcons(iconStr) {
+    iconStr = iconStr.replace('partly-', '');
+    iconStr = iconStr.replace('wind', 'windy');
+    iconStr = iconStr.replace('clear-day', 'day-sunny');
+    iconStr = iconStr.replace('clear-night', 'night-clear');
+    iconStr = iconStr.replace('cloudy-night', 'night-cloudy');
+    iconStr = iconStr.replace('-day', '');
+    return iconStr;
+  }
+
   return {
     getForecast: getForecast,
-    clearCache: clearCache
+    clearCache: clearCache,
+    renameIcons: renameIcons
   };
 });
 
