@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<widget id="com.ionicframework.maps490166" version="0.0.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+<widget id="com.weatherhistory.app" version="0.1.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
   <name>Weather History</name>
   <description>
-        An app that lets you view past weather conditions.
+        An app that lets you view past weather conditions of a date on an annual basis.
     </description>
   <author email="javier@javierdev.com" href="http://javierdev.com/">
       Javier Pena
