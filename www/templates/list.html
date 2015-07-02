@@ -21,26 +21,30 @@
 
     <ion-list>
       <ion-item class="card" collection-repeat="forecast in list track by $index" href="#/app/list/{{forecast.currently.time}}">
-        <p>
-          <i class="wi wi-sleet"></i>{{forecast.currently.temperature}}
-        </p>
-        <p>
-          {{forecast.year}}
-          <br>
-          Temp: {{forecast.currently.temperature}}
-          <br>
-          Windspeed: {{forecast.currently.windSpeed}}
-          <br>
-          Wind bearing: {{forecast.currently.windBearing}}
-          <br>
-          Humidity: {{forecast.currently.humidity}}%
-          <br>
-          Precipitation: {{forecast.currently.precipProbability}}
-        </p>
+        <h2>{{forecast.year}}</h2>
+        <div class="icon-left">
+          <i class="wi wi-{{forecast.currently.icon}}"></i>
+          <h3>{{forecast.currently.temperature}}</h3>
+          <h4>Hi: {{forecast.daily.data[0].temperatureMax}} | Lo: {{forecast.daily.data[0].temperatureMin}}</h4>
+        </div>
+        <!-- <p> -->
+        <!--   Temp: {{forecast.currently.summary}} -->
+        <!--   <br> -->
+        <!--   <br> -->
+        <!--    -->
+        <!--   <br> -->
+        <!--   Windspeed: {{forecast.currently.windSpeed}} -->
+        <!--   <br> -->
+        <!--   Wind bearing: {{forecast.currently.windBearing}} -->
+        <!--   <br> -->
+        <!--   Humidity: {{forecast.currently.humidity}}% -->
+        <!--   <br> -->
+        <!--   Precipitation: {{forecast.currently.precipProbability}} -->
+        <!-- </p> -->
       </ion-item>
     </ion-list>
 
-    <ion-infinite-scroll on-infinite="loadData()" immediate-check="false">
+    <ion-infinite-scroll on-infinite="loadData()">
     </ion-infinite-scroll>
   </ion-content>
 </ion-view>

@@ -14,7 +14,6 @@ angular.module('weatherHistory.controllers')
 
 
   $scope.$on('list:reload', reloadData);
-  $scope.$on('$stateChangeSuccess', reloadData);
   $scope.$watch('list.length', orderList);
   $scope.$watch('models.place.details', getNewPlace);
   $scope.$watch('models.date', getNewDate);
@@ -30,10 +29,11 @@ angular.module('weatherHistory.controllers')
         $scope.city = settings.city;
         $scope.country = settings.country;
         $scope.formattedDate = moment(settings.date).format(settings.dateFormat);
-        var oldLength = $scope.list.length;
+        var interval = settings.interval, 
+          oldLength = $scope.list.length * interval;
 
         for (var i = 0; i < LENGTH; i++) {
-          var time = moment(settings.date).subtract(oldLength + i, 'years').unix();
+          var time = moment(settings.date).subtract(oldLength + i * interval, 'years').unix();
           forecastFactory.getForecast(settings.latitude, settings.longitude, time, settings)
             .then(handleData);
         }
