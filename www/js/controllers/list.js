@@ -154,6 +154,17 @@ angular.module('weatherHistory.controllers')
     if (newDate !== oldDate) {
       // TODO: Doesn't close when picking same day after changing months
       if (moment(newDate).isSame(oldDate, 'month')) {
+        newDate = new Date(newDate);
+        var YYYY = newDate.getFullYear(),
+          MM = newDate.getMonth(),
+          DD = newDate.getDate(),
+          // Datepicker sets time to midnight so get back current time for new date
+          now = new Date(),
+          hh = now.getHours(),
+          mm = now.getMinutes(),
+          ss = now.getSeconds();
+
+        newDate = new Date(YYYY, MM, DD, hh, mm, ss);
         settingsFactory.set({date: newDate});
         reloadData();
         $scope.$broadcast('DatepickerModal:closeModal');
