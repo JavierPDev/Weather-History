@@ -32,10 +32,17 @@ angular.module('weatherHistory.controllers')
         $scope.country = settings.country;
         $scope.formattedDate = moment(settings.date).format(settings.dateFormat);
         var interval = settings.interval, 
-          oldLength = $scope.list.length * interval;
+          oldLength = $scope.list.length * interval,
+          YYYY = moment(settings.date).format('YYYY'),
+          MM = moment(settings.date).format('MM'),
+          DD = moment(settings.date).format('DD'),
+          HH = moment(settings.date).format('HH'),
+          mm = moment(settings.date).format('mm'),
+          ss = moment(settings.date).format('ss');
 
         for (var i = 0; i < LENGTH; i++) {
-          var time = moment(settings.date).subtract(oldLength + i * interval, 'years').unix();
+          var sub = oldLength + i * interval,
+            time = YYYY-sub+'-'+MM+'-'+DD+'T'+HH+':'+mm+':'+ss;
           forecastFactory.getForecast(settings.latitude, settings.longitude, time, settings)
             .then(handleData);
         }

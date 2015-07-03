@@ -25,7 +25,7 @@ angular.module('weatherHistory.services')
       cacheKey = '/forecast/'+time,
       queryParams = serialize(options);
 
-    return $http.jsonp(baseUrl+latitude+','+longitude+','+Math.floor(time)+'?callback=JSON_CALLBACK&'+queryParams, {cache: forecastCache});
+    return $http.jsonp(baseUrl+latitude+','+longitude+','+time+'?callback=JSON_CALLBACK&'+queryParams, {cache: forecastCache});
   }
 
   /**
