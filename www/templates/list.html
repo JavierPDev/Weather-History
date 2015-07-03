@@ -3,7 +3,7 @@
     <button menu-toggle="left" class="button button-icon icon ion-navicon"></button>
   </ion-nav-buttons>
 
-  <!-- Enable ionic native scroll: http://blog.ionic.io/native&#45;scrolling&#45;in&#45;ionic&#45;a&#45;tale&#45;in&#45;rhyme/ -->
+  <!-- Enable ionic native scroll: http://blog.ionic.io/native-scrolling-in-ionic-a-tale-in-rhyme/ -->
   <ion-content overflow-scroll=”true” class="has-header">
     <ion-refresher on-refresh="reloadData(true)">
     </ion-refresher>
@@ -19,32 +19,23 @@
       <button ng-click="datepickerModal.openModal()" class="button"><i class="icon ion-calendar"></i> {{formattedDate}}</button>
     </div>
 
-    <ion-list>
+    <ion-list class="weather-list">
       <ion-item class="card" collection-repeat="forecast in list track by $index" href="#/app/list/{{forecast.currently.time}}">
         <h2>{{forecast.year}}</h2>
-        <div class="icon-left">
-          <i class="wi wi-{{forecast.currently.icon}}"></i>
-          <h3>{{forecast.currently.temperature}}</h3>
-          <h4>Hi: {{forecast.daily.data[0].temperatureMax}} | Lo: {{forecast.daily.data[0].temperatureMin}}</h4>
+        <div class="row">
+          <div class="col">
+            <i class="wi wi-{{forecast.currently.icon}}"></i>
+            <h3>{{forecast.currently.temperature}}</h3>
+          </div>
+          <div class="col col-75">
+            {{forecast.currently.summary}}
+            <h4>Hi: {{forecast.daily.data[0].temperatureMax}} | Lo: {{forecast.daily.data[0].temperatureMin}}</h4>
+          </div>
         </div>
-        <!-- <p> -->
-        <!--   Temp: {{forecast.currently.summary}} -->
-        <!--   <br> -->
-        <!--   <br> -->
-        <!--    -->
-        <!--   <br> -->
-        <!--   Windspeed: {{forecast.currently.windSpeed}} -->
-        <!--   <br> -->
-        <!--   Wind bearing: {{forecast.currently.windBearing}} -->
-        <!--   <br> -->
-        <!--   Humidity: {{forecast.currently.humidity}}% -->
-        <!--   <br> -->
-        <!--   Precipitation: {{forecast.currently.precipProbability}} -->
-        <!-- </p> -->
       </ion-item>
     </ion-list>
 
-    <ion-infinite-scroll on-infinite="loadData()">
+    <ion-infinite-scroll on-infinite="loadData()" ng-if="canLoadData()">
     </ion-infinite-scroll>
   </ion-content>
 </ion-view>
