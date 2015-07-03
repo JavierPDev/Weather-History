@@ -2,6 +2,7 @@ angular.module('weatherHistory.controllers')
 .controller('ListCtrl', function($scope, $filter, settingsFactory, geocoder, forecastFactory) {
   $scope.loadData = loadData;
   $scope.reloadData = reloadData;
+  $scope.canLoadData = canLoadData;
   $scope.models = {
     date: forecastFactory.date,
     place: {
@@ -10,6 +11,7 @@ angular.module('weatherHistory.controllers')
     }};
   $scope.list = [];
   var expectedLength = 3,
+    canLoad = true,
     LENGTH = 3;
 
 
@@ -46,9 +48,32 @@ angular.module('weatherHistory.controllers')
    * @param {Object} forecast - Forecast data
    */
   function handleData(forecast) {
-    forecast.data.year = parseInt(moment.unix(forecast.data.currently.time).format('YYYY'), 10);
-    forecast.data.currently.icon = forecastFactory.renameIcons(forecast.data.currently.icon);
-    $scope.list.push(forecast.data);
+    // Check we're still getting data otherwise stop infinite scroll
+    if (forecast.data.currently.icon) {
+      forecast.data.year = parseInt(moment.unix(forecast.data.currently.time).format('YYYY'), 10);
+      forecast.data.currently.icon = forecastFactory.renameIcons(forecast.data.currently.icon);
+      $scope.list.push(forecast.data);
+    } else {
+      canLoad = false;
+
+      // Last two items end up switched so here's a hack
+      var listLength = $scope.list,
+        penUltimate, ultimate;
+      angular.copy($scope.list[listLength-2], ultimate),
+      angular.copy($scope.list[listLength-1], penUltimate);
+      $scope.list[listLength-1] = penUltimate;
+      $scope.list[listLength-2] = ultimate;
+    }
+  }
+
+  /**
+   * Handle error received from api calls in loadData for loop.
+   *
+   * @param {Object} forecast - Forecast data
+   */
+  function handleError() {
+    console.log('error')
+    canLoad = false;
   }
 
   /**
@@ -78,6 +103,7 @@ angular.module('weatherHistory.controllers')
   function reloadData(pulledToRefresh) {
     $scope.list = [];
     expectedLength = LENGTH;
+    canLoad = true;
     forecastFactory.clearCache();
     loadData();
 
@@ -86,6 +112,15 @@ angular.module('weatherHistory.controllers')
     if (pulledToRefresh) {
       $scope.$broadcast('scroll.refreshComplete');
     }
+  }
+
+  /**
+   * Used when ;lder forecasts can't be retrieved anymore.
+   *
+   * @return {Boolean} canLoad - Whether data can be loaded
+   */
+  function canLoadData() {
+    return canLoad;
   }
 
   /**
