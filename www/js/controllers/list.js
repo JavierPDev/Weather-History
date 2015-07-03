@@ -74,16 +74,6 @@ angular.module('weatherHistory.controllers')
   }
 
   /**
-   * Handle error received from api calls in loadData for loop.
-   *
-   * @param {Object} forecast - Forecast data
-   */
-  function handleError() {
-    console.log('error')
-    canLoad = false;
-  }
-
-  /**
    * Watch to see when api calls are done and list is full of new data. Orders only new data.
    *
    * @param {Number} newLength - New length
@@ -122,7 +112,7 @@ angular.module('weatherHistory.controllers')
   }
 
   /**
-   * Used when ;lder forecasts can't be retrieved anymore.
+   * Used when older forecasts can't be retrieved anymore.
    *
    * @return {Boolean} canLoad - Whether data can be loaded
    */
