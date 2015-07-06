@@ -10,9 +10,9 @@ angular.module('weatherHistory.controllers')
       place: null
     }};
   $scope.list = [];
-  var expectedLength = 3,
+  var expectedLength = 7,
     canLoad = true,
-    LENGTH = 3;
+    LENGTH = 7;
 
 
   $scope.$on('list:reload', reloadData);
@@ -68,7 +68,7 @@ angular.module('weatherHistory.controllers')
       // Last two items end up switched so here's a hack
       var listLength = $scope.list,
         penUltimate, ultimate;
-      angular.copy($scope.list[listLength-2], ultimate),
+      angular.copy($scope.list[listLength-2], ultimate);
       angular.copy($scope.list[listLength-1], penUltimate);
       $scope.list[listLength-1] = penUltimate;
       $scope.list[listLength-2] = ultimate;
@@ -99,7 +99,8 @@ angular.module('weatherHistory.controllers')
     expectedLength = LENGTH;
     canLoad = true;
     forecastFactory.clearCache();
-    loadData();
+    // Just wiping out the list sets off infinite scroll so this is out to avoid duplicates.
+    // loadData();
 
     // Make conditional since it uses javascript to scroll which triggers infinite scroll to
     // call its method (meaning data is duplicated).
@@ -164,6 +165,7 @@ angular.module('weatherHistory.controllers')
         newDate = new Date(YYYY, MM, DD, hh, mm, ss);
         settingsFactory.set({date: newDate});
         reloadData();
+        loadData();
         $scope.$broadcast('DatepickerModal:closeModal');
       }
     }
