@@ -16,7 +16,6 @@ angular.module('weatherHistory.controllers')
 
 
   $scope.$on('list:reload', reloadData);
-  $scope.$watch('list.length', orderList);
   $scope.$watch('models.place.details', getNewPlace);
   $scope.$watch('models.date', getNewDate);
 
@@ -60,6 +59,9 @@ angular.module('weatherHistory.controllers')
       forecast.data.year = parseInt(moment.unix(forecast.data.currently.time).format('YYYY'), 10);
       forecast.data.currently.icon = forecastFactory.renameIcons(forecast.data.currently.icon);
       $scope.list.push(forecast.data);
+      if ($scope.list.length === expectedLength) {
+        orderList($scope.list);
+      }
     } else {
       canLoad = false;
 
@@ -74,21 +76,16 @@ angular.module('weatherHistory.controllers')
   }
 
   /**
-   * Watch to see when api calls are done and list is full of new data. Orders only new data.
+   * Order recently added elements of the list when api calls done to keep list in order.
    *
-   * @param {Number} newLength - New length
-   * @param {Number} oldLength - Old length
+   * @param {Array} list - List of forecasts
    */
-  function orderList(newLength, oldLength) {
-    if (newLength !== oldLength) {
-      if (newLength === expectedLength) {
-        var recentlyAdded = $scope.list.splice(newLength - LENGTH, LENGTH);
-        recentlyAdded = $filter('orderBy')(recentlyAdded, 'year', true);
-        $scope.list = $scope.list.concat(recentlyAdded);
-        expectedLength = expectedLength + LENGTH;
-        $scope.$broadcast('scroll.infiniteScrollComplete');
-      }
-    }
+  function orderList(list) {
+      var recentlyAdded = $scope.list.splice($scope.list.length - LENGTH, LENGTH);
+      recentlyAdded = $filter('orderBy')(recentlyAdded, 'year', true);
+      $scope.list = $scope.list.concat(recentlyAdded);
+      expectedLength = expectedLength + LENGTH;
+      $scope.$broadcast('scroll.infiniteScrollComplete');
   }
 
   /**
