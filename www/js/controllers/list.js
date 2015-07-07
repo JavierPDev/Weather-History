@@ -1,5 +1,5 @@
 angular.module('weatherHistory.controllers')
-.controller('ListCtrl', function($scope, $filter, settingsFactory, geocoder, forecastFactory) {
+.controller('ListCtrl', function($scope, $q, $filter, settingsFactory, geocoder, forecastFactory) {
   $scope.loadData = loadData;
   $scope.reloadData = reloadData;
   $scope.canLoadData = canLoadData;
@@ -10,8 +10,8 @@ angular.module('weatherHistory.controllers')
       place: null
     }};
   $scope.list = [];
-  var expectedLength = 7,
-    canLoad = true,
+  var canLoad = true,
+    yearsCheck = [],
     LENGTH = 7;
 
 
@@ -37,66 +37,49 @@ angular.module('weatherHistory.controllers')
           DD = moment(settings.date).format('DD'),
           HH = moment(settings.date).format('HH'),
           mm = moment(settings.date).format('mm'),
-          ss = moment(settings.date).format('ss');
+          ss = moment(settings.date).format('ss'),
+          promises = [];
 
         for (var i = 0; i < LENGTH; i++) {
           var sub = oldLength + i * interval,
             time = YYYY-sub+'-'+MM+'-'+DD+'T'+HH+':'+mm+':'+ss;
-          forecastFactory.getForecast(settings.latitude, settings.longitude, time, settings)
-            .then(handleData);
+          yearsCheck.push(YYYY-sub);
+          promises[i] = forecastFactory.getForecast(settings.latitude, settings.longitude, time, settings);
         }
+
+        $q.all(promises)
+          .then(function(results) {
+            results = $filter('orderBy')(results, 'data.currently.time', true);
+            angular.forEach(results, function(forecast) {
+              if (forecast.data.currently.icon) {
+                forecast.data.year = parseInt(moment.unix(forecast.data.currently.time).format('YYYY'), 10);
+                forecast.data.currently.icon = forecastFactory.renameIcons(forecast.data.currently.icon);
+                
+                // Needed because sometimes forecast.io returns future dates when you ask for really old dates
+                // so we need to make sure we get the dates we wanted and at the same time not already listed.
+                if (yearsCheck.indexOf(forecast.data.year) > -1 && !($scope.list.indexOf(forecast.data) > -1)) {
+                  $scope.list.push(forecast.data);
+                }
+              } else {
+                canLoad = false;
+              }
+            });
+
+            $scope.$broadcast('scroll.infiniteScrollComplete');
+          });
       });
   }
 
-  /**
-   * Handle data received from api calls in loadData for loop.
-   *
-   * @param {Object} forecast - Forecast data
-   */
-  function handleData(forecast) {
-    // Check we're still getting data otherwise stop infinite scroll
-    if (forecast.data.currently.icon) {
-      forecast.data.year = parseInt(moment.unix(forecast.data.currently.time).format('YYYY'), 10);
-      forecast.data.currently.icon = forecastFactory.renameIcons(forecast.data.currently.icon);
-      $scope.list.push(forecast.data);
-      if ($scope.list.length === expectedLength) {
-        orderList($scope.list);
-      }
-    } else {
-      canLoad = false;
-
-      // Last two items end up switched so here's a hack
-      var listLength = $scope.list,
-        penUltimate, ultimate;
-      angular.copy($scope.list[listLength-2], ultimate);
-      angular.copy($scope.list[listLength-1], penUltimate);
-      $scope.list[listLength-1] = penUltimate;
-      $scope.list[listLength-2] = ultimate;
-    }
-  }
 
   /**
-   * Order recently added elements of the list when api calls done to keep list in order.
-   *
-   * @param {Array} list - List of forecasts
-   */
-  function orderList(list) {
-      var recentlyAdded = $scope.list.splice($scope.list.length - LENGTH, LENGTH);
-      recentlyAdded = $filter('orderBy')(recentlyAdded, 'year', true);
-      $scope.list = $scope.list.concat(recentlyAdded);
-      expectedLength = expectedLength + LENGTH;
-      $scope.$broadcast('scroll.infiniteScrollComplete');
-  }
-
-  /**
-   * Reload data. Reset list and its expected length, clear cache, and then load data. Used when
+   * Reload data. Reset list, clear cache, and then load data. Used when
    * setting, date, or place change.
    *
    * @param {Boolean} pulledToRefresh - True if using pull to refresh directive
    */
   function reloadData(pulledToRefresh) {
     $scope.list = [];
-    expectedLength = LENGTH;
+    yearsCheck = [];
     canLoad = true;
     forecastFactory.clearCache();
     // Just wiping out the list sets off infinite scroll so this is out to avoid duplicates.
@@ -137,6 +120,7 @@ angular.module('weatherHistory.controllers')
         longitude: $scope.longitude
       });
       reloadData();
+      loadData();
       $scope.models.place.place = '';
     }
   }
