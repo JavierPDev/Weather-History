@@ -1,18 +1,22 @@
 angular.module('weatherHistory.controllers')
-.controller('ListCtrl', function($scope, $filter, settingsFactory, geocoder, forecastFactory) {
-  $scope.place = { place: null, details: {} };
+.controller('ListCtrl', function($scope, $q, $filter, settingsFactory, geocoder, forecastFactory) {
   $scope.loadData = loadData;
   $scope.reloadData = reloadData;
-  $scope.models = { date: forecastFactory.date };
+  $scope.canLoadData = canLoadData;
+  $scope.models = {
+    date: forecastFactory.date,
+    place: {
+      details: {},
+      place: null
+    }};
   $scope.list = [];
-  var expectedLength = 3,
-    LENGTH = 3;
+  var canLoad = true,
+    yearsCheck = [],
+    LENGTH = 7;
 
 
   $scope.$on('list:reload', reloadData);
-  $scope.$on('$stateChangeSuccess', reloadData);
-  $scope.$watch('list.length', orderList);
-  $scope.$watch('place.details', getNewPlace);
+  $scope.$watch('models.place.details', getNewPlace);
   $scope.$watch('models.date', getNewDate);
 
 
@@ -25,61 +29,76 @@ angular.module('weatherHistory.controllers')
       .then(function(settings) {
         $scope.city = settings.city;
         $scope.country = settings.country;
-        $scope.dateFormat = settings.dateFormat;
         $scope.formattedDate = moment(settings.date).format(settings.dateFormat);
-        var oldLength = $scope.list.length;
+        var interval = settings.interval, 
+          oldLength = $scope.list.length * interval,
+          YYYY = moment(settings.date).format('YYYY'),
+          MM = moment(settings.date).format('MM'),
+          DD = moment(settings.date).format('DD'),
+          HH = moment(settings.date).format('HH'),
+          mm = moment(settings.date).format('mm'),
+          ss = moment(settings.date).format('ss'),
+          promises = [];
 
         for (var i = 0; i < LENGTH; i++) {
-          var time = moment(settings.date).subtract(oldLength + i, 'years').unix();
-          forecastFactory.getForecast(settings.latitude, settings.longitude, time, settings)
-            .then(handleData);
+          var sub = oldLength + i * interval,
+            time = YYYY-sub+'-'+MM+'-'+DD+'T'+HH+':'+mm+':'+ss;
+          yearsCheck.push(YYYY-sub);
+          promises[i] = forecastFactory.getForecast(settings.latitude, settings.longitude, time, settings);
         }
+
+        $q.all(promises)
+          .then(function(results) {
+            results = $filter('orderBy')(results, 'data.currently.time', true);
+            angular.forEach(results, function(forecast) {
+              if (forecast.data.currently.icon) {
+                forecast.data.year = parseInt(moment.unix(forecast.data.currently.time).format('YYYY'), 10);
+                forecast.data.currently.icon = forecastFactory.renameIcons(forecast.data.currently.icon);
+                
+                // Needed because sometimes forecast.io returns future dates when you ask for really old dates
+                // so we need to make sure we get the dates we wanted and at the same time not already listed.
+                if (yearsCheck.indexOf(forecast.data.year) > -1 && !($scope.list.indexOf(forecast.data) > -1)) {
+                  $scope.list.push(forecast.data);
+                }
+              } else {
+                canLoad = false;
+              }
+            });
+
+            $scope.$broadcast('scroll.infiniteScrollComplete');
+          });
       });
   }
 
-  /**
-   * Handle data received from api calls in loadData for loop.
-   *
-   * @param {Object} forecast - Forecast data
-   */
-  function handleData(forecast) {
-    forecast.data.year = parseInt(moment.unix(forecast.data.currently.time).format('YYYY'), 10);
-    $scope.list.push(forecast.data);
-  }
 
   /**
-   * Watch to see when api calls are done and list is full of new data.
-   *
-   * @param {Number} newLength - New length
-   * @param {Number} oldLength - Old length
-   */
-  function orderList(newLength, oldLength) {
-    if (newLength !== oldLength) {
-      if (newLength === expectedLength) {
-        expectedLength = expectedLength + LENGTH;
-        $scope.list = $filter('orderBy')($scope.list, 'year', true);
-        $scope.$broadcast('scroll.infiniteScrollComplete');
-      }
-    }
-  }
-
-  /**
-   * Reload data. Reset list and its expected length, clear cache, and then load data. Used when
+   * Reload data. Reset list, clear cache, and then load data. Used when
    * setting, date, or place change.
    *
    * @param {Boolean} pulledToRefresh - True if using pull to refresh directive
    */
   function reloadData(pulledToRefresh) {
     $scope.list = [];
-    expectedLength = LENGTH;
+    yearsCheck = [];
+    canLoad = true;
     forecastFactory.clearCache();
-    loadData();
+    // Just wiping out the list sets off infinite scroll so this is out to avoid duplicates.
+    // loadData();
 
     // Make conditional since it uses javascript to scroll which triggers infinite scroll to
     // call its method (meaning data is duplicated).
     if (pulledToRefresh) {
       $scope.$broadcast('scroll.refreshComplete');
     }
+  }
+
+  /**
+   * Used when older forecasts can't be retrieved anymore.
+   *
+   * @return {Boolean} canLoad - Whether data can be loaded
+   */
+  function canLoadData() {
+    return canLoad;
   }
 
   /**
@@ -101,7 +120,8 @@ angular.module('weatherHistory.controllers')
         longitude: $scope.longitude
       });
       reloadData();
-      $scope.place.place = '';
+      loadData();
+      $scope.models.place.place = '';
     }
   }
 
@@ -116,8 +136,20 @@ angular.module('weatherHistory.controllers')
     if (newDate !== oldDate) {
       // TODO: Doesn't close when picking same day after changing months
       if (moment(newDate).isSame(oldDate, 'month')) {
+        newDate = new Date(newDate);
+        var YYYY = newDate.getFullYear(),
+          MM = newDate.getMonth(),
+          DD = newDate.getDate(),
+          // Datepicker sets time to midnight so get back current time for new date
+          now = new Date(),
+          hh = now.getHours(),
+          mm = now.getMinutes(),
+          ss = now.getSeconds();
+
+        newDate = new Date(YYYY, MM, DD, hh, mm, ss);
         settingsFactory.set({date: newDate});
         reloadData();
+        loadData();
         $scope.$broadcast('DatepickerModal:closeModal');
       }
     }

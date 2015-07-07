@@ -55,14 +55,14 @@ angular.module('weatherHistory.services')
   function setLocalSettings(country) {
     var localization;
 
-    if (country.match(/United States/i)) {
+    if (country.indexOf('United States') > -1) {
       localization = {
-        dateFormat: 'MM/DD',
+        dateFormat: 'MMM DD',
         units: 'us'
       };
     } else {
       localization = {
-        dateFormat: 'DD/MM',
+        dateFormat: 'DD MMM',
         units: 'si'
       };
     }
@@ -100,7 +100,7 @@ angular.module('weatherHistory.services')
     set: set,
     date: date,
     options: {
-      dateFormat: ['MM/DD', 'DD/MM'],
+      dateFormat: ['MM/DD', 'DD/MM', 'MMM DD', 'DD MMM'],
       interval: [1, 5, 10],
       units: ['us', 'si', 'ca', 'uk', 'auto']
     }

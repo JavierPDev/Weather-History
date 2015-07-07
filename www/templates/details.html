@@ -3,67 +3,64 @@
     <a class="button icon-left ion-chevron-left button-clear button-dark" href="#/">Back</a>
   </ion-nav-buttons>
   <ion-content overflow-scroll=”true” class="has-header">
-  <ion-list>
-  <ion-item>
-      {{ details.year }}
-  </ion-item>
-    <ion-item>  
-      Temperature: {{ details.currently.temperature }}
-    </ion-item>
-    <ion-item>  
-      Wind bearing: {{ details.currently.windBearing }}
-    </ion-item>
-    <ion-item>  
-      Windspeed: {{ details.currently.windSpeed }}
-    </ion-item>
-    <ion-item>  
-      Humidity: {{ details.currently.humidity }}
-    </ion-item>
-    <ion-item>  
-      Dew point: {{ details.currently.dewPoint }}
-    </ion-item>
-    <ion-item>  
-      Cloud cover: {{ details.currently.cloudCover }}
-    </ion-item>
-    <ion-item>  
-      Pressure: {{ details.currently.pressure }}
-    </ion-item>
-    <ion-item>  
-      Summary: {{ details.currently.summary }}
-    </ion-item>
-    <ion-item>  
-      Visibility: {{ details.currently.visibility }}
-    </ion-item>
-    <ion-item>  
-      Precipitation: {{ details.currently.precipProbability }}%
-    </ion-item>
-    <ion-item>  
-      Precipitation intensity: {{ details.currently.precipIntensity }}
-    </ion-item>
-    <ion-item>  
-      Moon phase: {{ details.daily.data[0].moonPhase }}
-    </ion-item>
-    <ion-item>  
-      Precipitation type: {{ details.daily.data[0].precipType }}
-    </ion-item>
-    <ion-item>  
-      Sunrise time: {{ details.daily.data[0].sunriseTime }}
-    </ion-item>
-    <ion-item>  
-      Sunset time: {{ details.daily.data[0].sunsetTime }}
-    </ion-item>
-    <ion-item>  
-      High: {{ details.daily.data[0].temperatureMax }}
-    </ion-item>
-    <ion-item>  
-      Low: {{ details.daily.data[0].temperatureMin }}
-    </ion-item>
-    <ion-item>  
-      High time: {{ details.daily.data[0].temperatureMaxTime }}
-    </ion-item>
-    <ion-item>  
-      Low time: {{ details.daily.data[0].temperatureMinTime }}
-    </ion-item>
+    <ion-list>
+      <ion-item>
+        <h1>{{details.year}}</h1>
+        <br>
+        <i class="wi wi-{{details.currently.icon}}"></i>
+        {{details.currently.temperature}} {{details.currently.summary}}
+      </ion-item>
+      <ion-item>  
+        Humidity: {{details.currently.humidity * 100}}%
+      </ion-item>
+      <ion-item>  
+        High: {{details.daily.data[0].temperatureMax}}
+      </ion-item>
+      <ion-item>  
+        Low: {{details.daily.data[0].temperatureMin}}
+      </ion-item>
+      <ion-item>  
+        High time: {{details.daily.data[0].temperatureMaxTime}}
+      </ion-item>
+      <ion-item>  
+        Low time: {{details.daily.data[0].temperatureMinTime}}
+      </ion-item>
+      <ion-item>  
+        Windspeed: {{details.currently.windSpeed}}
+      </ion-item>
+      <ion-item>  
+        Wind bearing: {{details.currently.windBearing}}
+      </ion-item>
+      <ion-item ng-if="details.currently.visibility">  
+        Visibility: {{details.currently.visibility}}
+      </ion-item>
+      <ion-item ng-if="details.daily.data[0].precipType">  
+        Precipitation type: {{details.daily.data[0].precipType}}
+      </ion-item>
+      <ion-item>  
+        Precipitation intensity: {{details.currently.precipIntensity}}
+      </ion-item>
+      <ion-item>  
+        Precipitation: {{details.currently.precipProbability * 100}}%
+      </ion-item>
+      <ion-item>  
+        Dew point: {{details.currently.dewPoint}}
+      </ion-item>
+      <ion-item>  
+        Cloud cover: {{details.currently.cloudCover}}
+      </ion-item>
+      <ion-item>  
+        Pressure: {{details.currently.pressure}}
+      </ion-item>
+      <ion-item>  
+        Moon phase: {{details.daily.data[0].moonPhase*100}}%
+      </ion-item>
+      <ion-item>  
+        Sunrise time: {{details.daily.data[0].sunriseTime}}
+      </ion-item>
+      <ion-item>  
+        Sunset time: {{details.daily.data[0].sunsetTime}}
+      </ion-item>
     </ion-list>
   </ion-content>
 </ion-view>
