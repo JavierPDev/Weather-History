@@ -24,7 +24,14 @@
     "karma-phantomjs-launcher": "^0.1.4",
     "phantomjs": "^1.9.16"
   },
-  "cordovaPlugins": [],
+  "cordovaPlugins": [
+    "com.ionic.keyboard",
+    "cordova-plugin-crosswalk-webview",
+    "cordova-plugin-geolocation",
+    "cordova-plugin-inappbrowser",
+    "cordova-plugin-splashscreen",
+    "cordova-plugin-whitelist"
+  ],
   "cordovaPlatforms": [
     "android"
   ]
