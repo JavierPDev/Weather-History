@@ -19,7 +19,7 @@ angular.module('weatherHistory.controllers')
     if (date.toString().indexOf('m') > -1) {
       return date;
     } else {
-      return moment(date * 1000).format('hh:mma');
+      return moment(date * 1000).format('h:mma');
     }
   }
 });
