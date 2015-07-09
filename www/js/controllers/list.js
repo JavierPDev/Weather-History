@@ -1,5 +1,5 @@
 angular.module('weatherHistory.controllers')
-.controller('ListCtrl', function($scope, $q, $filter, settingsFactory, geocoder, forecastFactory) {
+.controller('ListCtrl', function($scope, $q, $filter, $cordovaSplashscreen, settingsFactory, geocoder, forecastFactory) {
   $scope.loadData = loadData;
   $scope.reloadData = reloadData;
   $scope.canLoadData = canLoadData;
@@ -65,6 +65,7 @@ angular.module('weatherHistory.controllers')
               }
             });
 
+            $cordovaSplashscreen.hide();
             $scope.$broadcast('scroll.infiniteScrollComplete');
           });
       });
