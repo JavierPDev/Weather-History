@@ -37,10 +37,10 @@
       <ion-item ng-if="details.daily.data[0].precipType">  
         Precipitation type: {{details.daily.data[0].precipType}}
       </ion-item>
-      <ion-item>  
+      <ion-item ng-if="details.currently.precipIntensity">  
         Precipitation intensity: {{details.currently.precipIntensity}}
       </ion-item>
-      <ion-item>  
+      <ion-item ng-if="details.currently.precipProbability">  
         Precipitation: {{details.currently.precipProbability * 100}}%
       </ion-item>
       <ion-item>  
