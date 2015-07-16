@@ -28,7 +28,7 @@
     "com.ionic.keyboard",
     "cordova-plugin-crosswalk-webview",
     "cordova-plugin-console",
-    "cordova-plugin-geolocation",
+    "org.apache.cordova.geolocation",
     "cordova-plugin-inappbrowser",
     "cordova-plugin-splashscreen",
     "cordova-plugin-whitelist",
