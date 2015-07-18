@@ -10,7 +10,7 @@ angular.module('weatherHistory.services')
    * @param {String} addr Address
    * @return {Object} Promise containing coordinates
    */
-  function getDeferredGeocode(addr) {
+  function getGeocode(addr) {
     geocoder.geocode({address: addr}, function(data, status) {
       if(status === 'OK') {
         var coords = {
@@ -34,7 +34,7 @@ angular.module('weatherHistory.services')
    * @param {Number} longitude Longitude
    * @return {Object} Promise containing location
    */
-  function getDeferredLocation(latitude, longitude) {
+  function getLocation(latitude, longitude) {
     var latLon = new google.maps.LatLng(latitude, longitude);
 
     geocoder.geocode({'latLng': latLon}, function(location, status) {
@@ -78,3 +78,4 @@ angular.module('weatherHistory.services')
     parseAddressComponents: parseAddressComponents
   };
 });
+

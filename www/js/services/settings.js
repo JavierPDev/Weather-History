@@ -25,7 +25,7 @@ angular.module('weatherHistory.services')
       .then(function(pos) {
         settings.latitude = pos.coords.latitude;
         settings.longitude = pos.coords.longitude;
-        geocoder.getDeferredLocation(settings.latitude, settings.longitude)
+        geocoder.getLocation(settings.latitude, settings.longitude)
           .then(function(location) {
             settings.city = location.address_components[3].long_name;
             settings.country = location.address_components[6].long_name;
