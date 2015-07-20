@@ -38,9 +38,12 @@ angular.module('weatherHistory.services')
         settings.city = 'New York';
         settings.country = 'United States';
         settings.dateFormat = 'MMM DD';
-        settings.latitute = 40.7127;
-        settings.longitutde = 74.0059;
+        settings.latitude = 40.7127;
+        settings.longitude = 74.0059;
         settings.units = 'us';
+        angular.extend(settings, setLocalSettings(settings.country));
+        set(settings);
+        deferredSettings.resolve(settings);
       });
   }
 
