@@ -56,7 +56,7 @@ angular.module('weatherHistory.services')
 
   function getTimezone(latitude, longitude) {
     var location = latitude+','+longitude;
-    return $http.jsonp(timezoneApiUrl, {
+    return $http.get(timezoneApiUrl, {
       cache: timezoneCache,
       params: {
         key: GOOGLE_API_KEY,
@@ -64,7 +64,7 @@ angular.module('weatherHistory.services')
         timestamp: Math.floor(Date.now() / 1000)
       },
       url: timezoneApiUrl
-    })
+    });
   }
 
   /**
