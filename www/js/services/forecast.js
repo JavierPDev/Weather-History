@@ -21,11 +21,13 @@ angular.module('weatherHistory.services')
    * @return {Object} promise - $http future object
    */
   function getForecast(latitude, longitude, time, options) {
-    var deferred = $q.defer(),
-      cacheKey = '/forecast/'+time,
-      queryParams = serialize(options);
+    var deferred = $q.defer();
+    options.callback = 'JSON_CALLBACK';
 
-    return $http.jsonp(baseUrl+latitude+','+longitude+','+time+'?callback=JSON_CALLBACK&'+queryParams, {cache: forecastCache});
+    return $http.jsonp(baseUrl+latitude+','+longitude+','+time, {
+      cache: forecastCache,
+      params: options
+    });
   }
 
   /**
@@ -33,29 +35,6 @@ angular.module('weatherHistory.services')
    */
   function clearCache() {
     forecastCache.removeAll();
-  }
-
-  /**
-   * Serialize an object into a query paramater string or return empty string. Non-recursive.
-   *
-   * @param {Object} query - Query paramaters in key/value pairs
-   * @return {String} queryString - Query parameters in valid string form or empty string if no input
-   */
-  function serialize(query) {
-    // if (query) {
-    //   var queryString = [];
-    //
-    //   angular.forEach(query, function(value, key) {
-    //     this.push(encodeURIComponent(key) + "=" + encodeURIComponent(value));
-    //   }, queryString);
-    //
-    //   return queryString.join("&");
-    // } else {
-    //   return '';
-    // }
-
-    // Since the only option really being used is unitType we'll hardcode that in
-    return '&units='+query.units;
   }
 
   /**

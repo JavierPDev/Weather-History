@@ -4,7 +4,7 @@ angular.module('weatherHistory.controllers')
   $scope.reloadData = reloadData;
   $scope.canLoadData = canLoadData;
   $scope.models = {
-    date: forecastFactory.date,
+    date: settingsFactory.date,
     place: {
       details: {},
       place: null
@@ -12,6 +12,8 @@ angular.module('weatherHistory.controllers')
   $scope.list = [];
   var canLoad = true,
     yearsCheck = [],
+    oldLatitude = null,
+    oldLongitude = null,
     LENGTH = 7;
 
 
@@ -39,35 +41,53 @@ angular.module('weatherHistory.controllers')
           mm = moment(settings.date).format('mm'),
           ss = moment(settings.date).format('ss'),
           promises = [];
+        var ZZ = '';
 
-        for (var i = 0; i < LENGTH; i++) {
-          var sub = oldLength + i * interval,
-            time = YYYY-sub+'-'+MM+'-'+DD+'T'+HH+':'+mm+':'+ss;
-          yearsCheck.push(YYYY-sub);
-          promises[i] = forecastFactory.getForecast(settings.latitude, settings.longitude, time, settings);
+        if (settings.latitude !== oldLatitude && settings.longitude !== oldLongitude) {
+          oldLatitude = settings.latitude;
+          oldLongitude = settings.longitude;
+
+          geocoder.getTimezone(settings.latitude, settings.longitude, settings.date)
+            .then(function(timezone) {
+              ZZ = timezone.offset;
+              settingsFactory.set({timezone: timezone});
+              getAll();
+            });
+        } else {
+          getAll();
         }
 
-        $q.all(promises)
-          .then(function(results) {
-            results = $filter('orderBy')(results, 'data.currently.time', true);
-            angular.forEach(results, function(forecast) {
-              if (forecast.data.currently.icon) {
-                forecast.data.year = parseInt(moment.unix(forecast.data.currently.time).format('YYYY'), 10);
-                forecast.data.currently.icon = forecastFactory.renameIcons(forecast.data.currently.icon);
-                
-                // Needed because sometimes forecast.io returns future dates when you ask for really old dates
-                // so we need to make sure we get the dates we wanted and at the same time not already listed.
-                if (yearsCheck.indexOf(forecast.data.year) > -1 && !($scope.list.indexOf(forecast.data) > -1)) {
-                  $scope.list.push(forecast.data);
-                }
-              } else {
-                canLoad = false;
-              }
-            });
+        function getAll() {
+          for (var i = 0; i < LENGTH; i++) {
+            var sub = oldLength + i * interval,
+              time = YYYY-sub+'-'+MM+'-'+DD+'T'+HH+':'+mm+':'+ss+ZZ;
+            yearsCheck.push(YYYY-sub);
+            promises[i] = forecastFactory.getForecast(settings.latitude, settings.longitude, time, { units: settings.units });
+          }
 
-            $cordovaSplashscreen.hide();
-            $scope.$broadcast('scroll.infiniteScrollComplete');
-          });
+          $q.all(promises)
+            .then(function(results) {
+              results = $filter('orderBy')(results, 'data.currently.time', true);
+              angular.forEach(results, function(forecast) {
+                if (forecast.data.currently.icon) {
+                  forecast.data.year = parseInt(moment.unix(forecast.data.currently.time).format('YYYY'), 10);
+                  forecast.data.currently.icon = forecastFactory.renameIcons(forecast.data.currently.icon);
+                  
+                  // Needed because sometimes forecast.io returns future dates when you ask for really old dates
+                  // so we need to make sure we get the dates we wanted and at the same time not already listed.
+                  // TODO: Switch to using ng-filter's 'unique' as in 'orderBy'
+                  if (yearsCheck.indexOf(forecast.data.year) > -1 && !($scope.list.indexOf(forecast.data) > -1)) {
+                    $scope.list.push(forecast.data);
+                  }
+                  $scope.$broadcast('scroll.infiniteScrollComplete');
+                } else {
+                  canLoad = false;
+                }
+              });
+
+              $cordovaSplashscreen.hide();
+            });
+        }
       });
   }
 

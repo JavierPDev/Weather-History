@@ -1,8 +1,14 @@
 angular.module('weatherHistory.services')
-.factory('geocoder', function($q) {
+.factory('geocoder', function($q, $http, CacheFactory, GOOGLE_API_KEY) {
   var geocoder = new google.maps.Geocoder(),
     deferredGeocode = $q.defer(),
-    deferredLocation = $q.defer();
+    deferredLocation = $q.defer(),
+    MIN = 60 * 1000,
+    timezoneCache = CacheFactory.createCache('timezoneCache', {
+      maxAge: 15 * MIN,
+      deleteOnExpire: 'aggressive'
+    }),
+    timezoneApiUrl = 'https://maps.googleapis.com/maps/api/timezone/json';
 
   /**
    * Use google maps API to get coordinates from an address.
@@ -10,7 +16,7 @@ angular.module('weatherHistory.services')
    * @param {String} addr Address
    * @return {Object} Promise containing coordinates
    */
-  function getDeferredGeocode(addr) {
+  function getGeocode(addr) {
     geocoder.geocode({address: addr}, function(data, status) {
       if(status === 'OK') {
         var coords = {
@@ -34,7 +40,7 @@ angular.module('weatherHistory.services')
    * @param {Number} longitude Longitude
    * @return {Object} Promise containing location
    */
-  function getDeferredLocation(latitude, longitude) {
+  function getLocation(latitude, longitude) {
     var latLon = new google.maps.LatLng(latitude, longitude);
 
     geocoder.geocode({'latLng': latLon}, function(location, status) {
@@ -46,6 +52,40 @@ angular.module('weatherHistory.services')
     });
 
     return deferredLocation.promise;
+  }
+
+  function getTimezone(latitude, longitude, date) {
+    var location = latitude+','+longitude,
+      deferred = $q.defer();
+
+    $http.get(timezoneApiUrl, {
+      cache: timezoneCache,
+      params: {
+        key: GOOGLE_API_KEY,
+        location: location,
+        timestamp: moment(date).unix()
+      }
+    })
+    .success(function(timezone) {
+      var offsetInSeconds = timezone.dstOffset + timezone.rawOffset,
+        negative = offsetInSeconds.toString().indexOf('-') > -1,
+        ZZ,
+        hh,
+        mm;
+      // Format timezone correctly for forecast io: +|-hhmm
+      offsetInSeconds = offsetInSeconds.toString().replace('-', '');
+      ZZ = moment.duration({seconds: offsetInSeconds});
+      hh = ZZ.hours();
+      hh = hh.toString().length < 2 ? '0'+hh.toString() : hh.toString();
+      mm = ZZ.minutes();
+      mm = mm.toString().length < 2 ? '0'+mm.toString() : mm.toString();
+      ZZ = hh.toString() + mm.toString();
+      ZZ = negative ? '-'+ZZ : '+'+ZZ;
+      timezone.offset = ZZ;
+      deferred.resolve(timezone);
+    });
+
+    return deferred.promise;
   }
 
   /**
@@ -73,8 +113,10 @@ angular.module('weatherHistory.services')
   }
 
   return {
-    getDeferredGeocode: getDeferredGeocode,
-    getDeferredLocation: getDeferredLocation,
+    getGeocode: getGeocode,
+    getLocation: getLocation,
+    getTimezone: getTimezone,
     parseAddressComponents: parseAddressComponents
   };
 });
+

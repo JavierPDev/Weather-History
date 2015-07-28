@@ -11,30 +11,21 @@ angular.module('weatherHistory.services')
     settings.date = new Date();
     deferredSettings.resolve(settings);
   } else {
-    // Settings object
     settings = {
-      city: '',
-      country: '',
-      date: new Date(),
-      dateFormat: '',
-      interval: 1,
-      latitute: 0,
-      longitutde: 0,
-      units: ''
+      date: date,
+      interval: 1
     };
 
     $cordovaGeolocation
-      .getCurrentPosition()
+      .getCurrentPosition({
+        timeout: 5000,
+        maxmiumAge: 30000,
+        enableHighAccuracy: false
+      })
       .then(function(pos) {
         settings.latitude = pos.coords.latitude;
         settings.longitude = pos.coords.longitude;
-      }, function(err) {
-        // Coordinates set to the Palatine Hill in Rome if not set or gotten from geolocation 
-        settings.latitude = 41.8883;
-        settings.longitude = 12.4869;
-      })
-      .finally(function() {
-        geocoder.getDeferredLocation(settings.latitude, settings.longitude)
+        geocoder.getLocation(settings.latitude, settings.longitude)
           .then(function(location) {
             settings.city = location.address_components[3].long_name;
             settings.country = location.address_components[6].long_name;
@@ -42,6 +33,17 @@ angular.module('weatherHistory.services')
             set(settings);
             deferredSettings.resolve(settings);
           });
+      }, function(err) {
+        // Default if geolocation doesn't work
+        settings.city = 'New York';
+        settings.country = 'United States';
+        settings.dateFormat = 'MMM DD';
+        settings.latitude = 40.7127;
+        settings.longitude = 74.0059;
+        settings.units = 'us';
+        angular.extend(settings, setLocalSettings(settings.country));
+        set(settings);
+        deferredSettings.resolve(settings);
       });
   }
 
