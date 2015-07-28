@@ -54,17 +54,38 @@ angular.module('weatherHistory.services')
     return deferredLocation.promise;
   }
 
-  function getTimezone(latitude, longitude) {
-    var location = latitude+','+longitude;
-    return $http.get(timezoneApiUrl, {
+  function getTimezone(latitude, longitude, date) {
+    var location = latitude+','+longitude,
+      deferred = $q.defer();
+
+    $http.get(timezoneApiUrl, {
       cache: timezoneCache,
       params: {
         key: GOOGLE_API_KEY,
         location: location,
-        timestamp: Math.floor(Date.now() / 1000)
-      },
-      url: timezoneApiUrl
+        timestamp: moment(date).unix()
+      }
+    })
+    .success(function(timezone) {
+      var offsetInSeconds = timezone.dstOffset + timezone.rawOffset,
+        negative = offsetInSeconds.toString().indexOf('-') > -1,
+        ZZ,
+        hh,
+        mm;
+      // Format timezone correctly for forecast io: +|-hhmm
+      offsetInSeconds = offsetInSeconds.toString().replace('-', '');
+      ZZ = moment.duration({seconds: offsetInSeconds});
+      hh = ZZ.hours();
+      hh = hh.toString().length < 2 ? '0'+hh.toString() : hh.toString();
+      mm = ZZ.minutes();
+      mm = mm.toString().length < 2 ? '0'+mm.toString() : mm.toString();
+      ZZ = hh.toString() + mm.toString();
+      ZZ = negative ? '-'+ZZ : '+'+ZZ;
+      timezone.offset = ZZ;
+      deferred.resolve(timezone);
     });
+
+    return deferred.promise;
   }
 
   /**

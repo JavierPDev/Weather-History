@@ -11,13 +11,13 @@
         {{details.currently.temperature}} {{details.currently.summary}}
       </ion-item>
       <ion-item>  
-        Humidity: {{details.currently.humidity * 100}}%
+        Humidity: {{details.currently.humidity * 100 | number: 2}}%
       </ion-item>
       <ion-item>  
-        High: {{details.daily.data[0].temperatureMax}}
+        High: {{details.daily.data[0].temperatureMax | number: 2}}
       </ion-item>
       <ion-item>  
-        Low: {{details.daily.data[0].temperatureMin}}
+        Low: {{details.daily.data[0].temperatureMin | number: 2}}
       </ion-item>
       <ion-item>  
         High time: {{details.daily.data[0].temperatureMaxTime}}
@@ -41,7 +41,7 @@
         Precipitation intensity: {{details.currently.precipIntensity}}
       </ion-item>
       <ion-item ng-if="details.currently.precipProbability">  
-        Precipitation: {{details.currently.precipProbability * 100}}%
+        Precipitation: {{details.currently.precipProbability * 100 | number: 2}}%
       </ion-item>
       <ion-item>  
         Dew point: {{details.currently.dewPoint}}
