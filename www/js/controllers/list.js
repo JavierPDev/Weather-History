@@ -132,8 +132,8 @@ angular.module('weatherHistory.controllers')
     if (newPlace !== oldPlace) {
       // Put city and country into $scope
       angular.extend($scope, geocoder.parseAddressComponents(newPlace.address_components));
-      $scope.latitude = parseFloat(newPlace.geometry.location.A, 10);
-      $scope.longitude = parseFloat(newPlace.geometry.location.F, 10);
+      $scope.latitude = parseFloat(newPlace.geometry.location.lat(), 10);
+      $scope.longitude = parseFloat(newPlace.geometry.location.lng(), 10);
       settingsFactory.set({
         city: $scope.city,
         country: $scope.country,
