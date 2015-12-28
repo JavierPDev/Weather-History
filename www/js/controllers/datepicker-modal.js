@@ -1,27 +1,39 @@
-angular.module('weatherHistory.controllers')
-.controller('DatepickerModalCtrl', function($scope, $ionicModal, settingsFactory) {
-  var self = this;
+(function() {
+  'use strict';
 
-  $ionicModal.fromTemplateUrl('templates/datepicker-modal.html', {
-    scope: $scope,
-    animation: 'slide-in-up'
-  }).then(function(modal) {
-    self.modal = modal;
-  });
+  angular
+    .module('weatherHistory.controllers')
+    .controller('DatepickerModalCtrl', DatepickerModalCtrl);
 
-  self.openModal = function() {
-    self.modal.show();
-  };
+  DatepickerModalCtrl.$inject = [
+    '$scope',
+    '$ionicModal',
+    'settingsFactory'
+  ];
 
-  self.closeModal = function() {
-    self.modal.hide();
-  };
+  function DatepickerModalCtrl($scope, $ionicModal, settingsFactory) {
+    var self = this;
 
-  //Cleanup the modal when we're done with it!
-  $scope.$on('$destroy', function() {
-    self.modal.remove();
-  });
+    $ionicModal.fromTemplateUrl('templates/datepicker-modal.html', {
+      scope: $scope,
+      animation: 'slide-in-up'
+    }).then(function(modal) {
+      self.modal = modal;
+    });
 
-  $scope.$on('DatepickerModal:closeModal', self.closeModal);
-});
+    self.openModal = function() {
+      self.modal.show();
+    };
 
+    self.closeModal = function() {
+      self.modal.hide();
+    };
+
+    //Cleanup the modal when we're done with it!
+    $scope.$on('$destroy', function() {
+      self.modal.remove();
+    });
+
+    $scope.$on('DatepickerModal:closeModal', self.closeModal);
+    }
+})();
