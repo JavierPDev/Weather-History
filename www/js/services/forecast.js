@@ -31,12 +31,19 @@
      */
     function getForecast(latitude, longitude, time, options) {
       var deferred = $q.defer();
+      var url = baseUrl+latitude+','+longitude+','+time;
       options.callback = 'JSON_CALLBACK';
 
-      return $http.jsonp(baseUrl+latitude+','+longitude+','+time, {
-        cache: forecastCache,
-        params: options
-      });
+      $http
+        .jsonp(url, {
+          cache: forecastCache,
+          params: options
+        })
+        .then(function(res) {
+          var forecast = processData(res.data, options.timezone.timezoneId);
+          deferred.resolve(forecast);
+        })
+      return deferred.promise;
     }
 
     /**
@@ -47,7 +54,41 @@
     }
 
     /**
-     * Method for renaming icon strings from forecast.io to fit weather icons set.
+     * Process forecast data into human readable format
+     *
+     * @param {Object} forecast - Forecast data to process
+     * @param {String} timezone - Timezone of forecast
+     * @return {Object} forecast - Forecast data formatted for user
+     */
+    function processData(forecast, timezone) {
+      forecast.year = parseInt(moment.unix(forecast.currently.time).format('YYYY'), 10);
+      forecast.daily.data[0].temperatureMaxTime = formatDate(forecast.daily.data[0].temperatureMaxTime, timezone);
+      forecast.daily.data[0].temperatureMinTime = formatDate(forecast.daily.data[0].temperatureMinTime, timezone);
+      forecast.daily.data[0].sunriseTime = formatDate(forecast.daily.data[0].sunriseTime, timezone);
+      forecast.daily.data[0].sunsetTime = formatDate(forecast.daily.data[0].sunsetTime, timezone);
+      forecast.year = parseInt(moment.unix(forecast.currently.time).format('YYYY'), 10);
+      forecast.currently.icon = renameIcons(forecast.currently.icon);
+      return forecast;
+    }
+
+    /**
+     * Format date in forecast
+     *
+     * @param {String} date - Date of forecast
+     * @param {String} timezone - Timezone of forecast
+     * @return {String} date - Formatted date
+     */
+    function formatDate(date, timezone) {
+      // Check if date needs to be formatted or if formatted date was cached
+      if (date.toString().indexOf('m') > -1) {
+        return date;
+      } else {
+        return moment.tz(date * 1000, timezone).format('h:mma');
+      }
+    }
+
+    /**
+     * Rename icon strings from forecast.io to fit weather icons set.
      *
      * @param {String} iconStr - String representing what icon to display. From forecast.io
      * @return {String} iconStr - String representing what icon to display. Modified for icon set
@@ -64,8 +105,7 @@
 
     return {
       getForecast: getForecast,
-      clearCache: clearCache,
-      renameIcons: renameIcons
+      clearCache: clearCache
     };
   }
 })();

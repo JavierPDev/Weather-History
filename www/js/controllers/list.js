@@ -78,22 +78,19 @@
               var sub = oldLength + i * interval,
                 time = YYYY-sub+'-'+MM+'-'+DD+'T'+HH+':'+mm+':'+ss+ZZ;
               yearsCheck.push(YYYY-sub);
-              promises[i] = forecastFactory.getForecast(settings.latitude, settings.longitude, time, { units: settings.units });
+              promises[i] = forecastFactory.getForecast(settings.latitude, settings.longitude, time, settings);
             }
 
             $q.all(promises)
               .then(function(results) {
                 results = $filter('orderBy')(results, 'data.currently.time', true);
                 angular.forEach(results, function(forecast) {
-                  if (forecast.data.currently.icon) {
-                    forecast.data.year = parseInt(moment.unix(forecast.data.currently.time).format('YYYY'), 10);
-                    forecast.data.currently.icon = forecastFactory.renameIcons(forecast.data.currently.icon);
-                    
+                  if (forecast.currently.icon) {
                     // Needed because sometimes forecast.io returns future dates when you ask for really old dates
                     // so we need to make sure we get the dates we wanted and at the same time not already listed.
                     // TODO: Switch to using ng-filter's 'unique' as in 'orderBy'
-                    if (yearsCheck.indexOf(forecast.data.year) > -1 && !($scope.list.indexOf(forecast.data) > -1)) {
-                      $scope.list.push(forecast.data);
+                    if (yearsCheck.indexOf(forecast.year) > -1 && !($scope.list.indexOf(forecast) > -1)) {
+                      $scope.list.push(forecast);
                     }
                     $scope.$broadcast('scroll.infiniteScrollComplete');
                   } else {
