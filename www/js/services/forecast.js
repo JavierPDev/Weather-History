@@ -13,12 +13,19 @@
   ];
 
   function forecastFactory($http, $q, CacheFactory, FORECASTIO_API_KEY) {
-    var baseUrl = 'https://api.forecast.io/forecast/'+FORECASTIO_API_KEY+'/',
-      MIN = 1000 * 60,
-      forecastCache = CacheFactory.createCache('forecastCache', {
-        maxAge: 15 * MIN,
-        deleteOnExpire: 'aggressive'
-      });
+    var service = {};
+    service.getForecast = getForecast;
+    service.clearCache = clearCache;
+    var baseUrl = 'https://api.forecast.io/forecast/'+FORECASTIO_API_KEY+'/';
+    var MIN = 1000 * 60;
+    var forecastCache = CacheFactory.createCache('forecastCache', {
+      maxAge: 15 * MIN,
+      deleteOnExpire: 'aggressive'
+    });
+
+    return service;
+
+    /////////////////
 
     /**
      * Get forecast for a location at a certain time.
@@ -26,23 +33,23 @@
      * @param {Number} latitude - Latitude
      * @param {Number} longitude - Longitude
      * @param {Number} time - Unix timestamp in seconds
-     * @param {Object} options - Options to pass as query parameters
-     * @return {Object} promise - $http future object
+     * @param {Object} params - Options to pass as query parameters
+     * @return {Object} promise - Promise with resolved forecast data
      */
-    function getForecast(latitude, longitude, time, options) {
+    function getForecast(latitude, longitude, time, params) {
       var deferred = $q.defer();
       var url = baseUrl+latitude+','+longitude+','+time;
-      options.callback = 'JSON_CALLBACK';
+      params.callback = 'JSON_CALLBACK';
 
       $http
         .jsonp(url, {
           cache: forecastCache,
-          params: options
+          params: params
         })
         .then(function(res) {
-          var forecast = processData(res.data, options.timezone.timezoneId);
+          var forecast = processData(res.data, params.timezone.timezoneId);
           deferred.resolve(forecast);
-        })
+        });
       return deferred.promise;
     }
 
@@ -66,21 +73,20 @@
       forecast.daily.data[0].temperatureMinTime = formatDate(forecast.daily.data[0].temperatureMinTime, timezone);
       forecast.daily.data[0].sunriseTime = formatDate(forecast.daily.data[0].sunriseTime, timezone);
       forecast.daily.data[0].sunsetTime = formatDate(forecast.daily.data[0].sunsetTime, timezone);
-      forecast.year = parseInt(moment.unix(forecast.currently.time).format('YYYY'), 10);
       forecast.currently.icon = renameIcons(forecast.currently.icon);
       return forecast;
     }
 
     /**
-     * Format date in forecast
+     * Format date in forecast if it needs or ignore if formatted date cached
      *
      * @param {String} date - Date of forecast
      * @param {String} timezone - Timezone of forecast
      * @return {String} date - Formatted date
      */
     function formatDate(date, timezone) {
-      // Check if date needs to be formatted or if formatted date was cached
-      if (date.toString().indexOf('m') > -1) {
+      var dateIsFormatted = date.toString().indexOf('m') > -1;
+      if (dateIsFormatted) {
         return date;
       } else {
         return moment.tz(date * 1000, timezone).format('h:mma');
@@ -102,10 +108,5 @@
       iconStr = iconStr.replace('-day', '');
       return iconStr;
     }
-
-    return {
-      getForecast: getForecast,
-      clearCache: clearCache
-    };
   }
 })();
