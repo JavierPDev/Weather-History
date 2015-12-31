@@ -7,11 +7,10 @@
 
   DatepickerModalCtrl.$inject = [
     '$scope',
-    '$ionicModal',
-    'settingsFactory'
+    '$ionicModal'
   ];
 
-  function DatepickerModalCtrl($scope, $ionicModal, settingsFactory) {
+  function DatepickerModalCtrl($scope, $ionicModal) {
     var self = this;
 
     $ionicModal.fromTemplateUrl('templates/datepicker-modal.html', {

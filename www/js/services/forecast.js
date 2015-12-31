@@ -14,8 +14,9 @@
 
   function forecastFactory($http, $q, CacheFactory, FORECASTIO_API_KEY) {
     var service = {};
-    service.getForecast = getForecast;
     service.clearCache = clearCache;
+    service.getForecast = getForecast;
+
     var baseUrl = 'https://api.forecast.io/forecast/'+FORECASTIO_API_KEY+'/';
     var MIN = 1000 * 60;
     var forecastCache = CacheFactory.createCache('forecastCache', {
