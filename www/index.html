@@ -9,16 +9,22 @@
       connect-src 'self' 'unsafe-inline' 'unsafe-eval' ws://localhost:8200 http://localhost:8200 ws://localhost:35729 https://maps.googleapis.com https://maps.gstatic.com https://csi.gstatic.com https://api.forecast.io;
       img-src 'self' https://maps.googleapis.com https://maps.gstatic.com https://csi.gstatic.com;
     ">
-    <title>Weather Backcast</title>
+    <title>Weather History</title>
     <link href="lib/ionic/release/css/ionic.css" rel="stylesheet">
     <link href="lib/angularjs-datepicker/dist/angular-datepicker.min.css" rel="stylesheet">
     <link href="css/weather-icons.css" rel="stylesheet">
     <link href="css/ionic.app.css" rel="stylesheet">
+    <script>
+      window.keys = {};
+      window.keys.admob = {};
+      window.keys.forecastIo = '';
+      window.keys.admob.banner = '';
+    </script>
     <script src="lib/ionic/release/js/ionic.bundle.js"></script>
     <script src="lib/ngCordova/dist/ng-cordova.js"></script>
     <script src="cordova.js"></script>
 
-    <script src="https://maps.googleapis.com/maps/api/js?libraries=places&key=AIzaSyBCBrSgkwb2i05tz-DhvJzTJ38a7wL2ixk"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?libraries=places&key="></script>
     <script src="lib/ngAutocomplete/src/ngAutocomplete.js"></script>
     <script src="lib/angular-cache/dist/angular-cache.min.js"></script>
     <!-- <script src="./dist/main.min.js"></script> -->
