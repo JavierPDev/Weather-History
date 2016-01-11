@@ -16,27 +16,32 @@
   ];
 
   function ListController($scope, $q, $filter, $cordovaSplashscreen, settingsFactory, geocoder, forecastFactory) {
-    $scope.loadData = loadData;
-    $scope.reloadData = reloadData;
-    $scope.canLoadData = canLoadData;
-    $scope.models = {
+    var vm = this;
+    vm.canLoadData = canLoadData;
+    vm.list = [];
+    vm.loadData = loadData;
+    vm.reloadData = reloadData;
+    vm.models = {
       date: settingsFactory.date,
       place: {
         details: {},
         place: null
       }};
-    $scope.list = [];
-    var canLoad = true,
-      yearsCheck = [],
-      oldLatitude = null,
-      oldLongitude = null,
-      LENGTH = 7;
+    var canLoad = true;
+    var oldLatitude = null;
+    var oldLongitude = null;
+    var LENGTH = 7;
+    var yearsCheck = [];
 
+    activate();
 
-    $scope.$on('list:reload', reloadData);
-    $scope.$watch('models.place.details', getNewPlace);
-    $scope.$watch('models.date', getNewDate);
-
+    ///////////////////
+    
+    function activate() {
+      $scope.$on('list:reload', reloadData);
+      $scope.$watch('vm.models.place.details', getNewPlace);
+      $scope.$watch('vm.models.date', getNewDate);
+    }
 
     /**
      * Load data from forecast.io. Used in infinite scroll and called whenever
@@ -45,18 +50,18 @@
     function loadData() {
       settingsFactory.getDeferred()
         .then(function(settings) {
-          $scope.city = settings.city;
-          $scope.country = settings.country;
-          $scope.formattedDate = moment(settings.date).format(settings.dateFormat);
-          var interval = settings.interval, 
-            oldLength = $scope.list.length * interval,
-            YYYY = moment(settings.date).format('YYYY'),
-            MM = moment(settings.date).format('MM'),
-            DD = moment(settings.date).format('DD'),
-            HH = moment(settings.date).format('HH'),
-            mm = moment(settings.date).format('mm'),
-            ss = moment(settings.date).format('ss'),
-            promises = [];
+          vm.city = settings.city;
+          vm.country = settings.country;
+          vm.formattedDate = moment(settings.date).format(settings.dateFormat);
+          var interval = settings.interval;
+          var oldLength = vm.list.length * interval;
+          var YYYY = moment(settings.date).format('YYYY');
+          var MM = moment(settings.date).format('MM');
+          var DD = moment(settings.date).format('DD');
+          var HH = moment(settings.date).format('HH');
+          var mm = moment(settings.date).format('mm');
+          var ss = moment(settings.date).format('ss');
+          var promises = [];
           var ZZ = '';
 
           if (settings.latitude !== oldLatitude && settings.longitude !== oldLongitude) {
@@ -75,8 +80,8 @@
 
           function getAll() {
             for (var i = 0; i < LENGTH; i++) {
-              var sub = oldLength + i * interval,
-                time = YYYY-sub+'-'+MM+'-'+DD+'T'+HH+':'+mm+':'+ss+ZZ;
+              var sub = oldLength + i * interval;
+              var time = YYYY-sub+'-'+MM+'-'+DD+'T'+HH+':'+mm+':'+ss+ZZ;
               yearsCheck.push(YYYY-sub);
               promises[i] = forecastFactory.getForecast(settings.latitude, settings.longitude, time, settings);
             }
@@ -89,8 +94,8 @@
                     // Needed because sometimes forecast.io returns future dates when you ask for really old dates
                     // so we need to make sure we get the dates we wanted and at the same time not already listed.
                     // TODO: Switch to using ng-filter's 'unique' as in 'orderBy'
-                    if (yearsCheck.indexOf(forecast.year) > -1 && !($scope.list.indexOf(forecast) > -1)) {
-                      $scope.list.push(forecast);
+                    if (yearsCheck.indexOf(forecast.year) > -1 && !(vm.list.indexOf(forecast) > -1)) {
+                      vm.list.push(forecast);
                     }
                     $scope.$broadcast('scroll.infiniteScrollComplete');
                   } else {
@@ -112,7 +117,7 @@
      * @param {Boolean} pulledToRefresh - True if using pull to refresh directive
      */
     function reloadData(pulledToRefresh) {
-      $scope.list = [];
+      vm.list = [];
       yearsCheck = [];
       canLoad = true;
       forecastFactory.clearCache();
@@ -143,19 +148,19 @@
      */
     function getNewPlace(newPlace, oldPlace) {
       if (newPlace !== oldPlace) {
-        // Put city and country into $scope
-        angular.extend($scope, geocoder.parseAddressComponents(newPlace.address_components));
-        $scope.latitude = parseFloat(newPlace.geometry.location.lat(), 10);
-        $scope.longitude = parseFloat(newPlace.geometry.location.lng(), 10);
+        // Put city and country into vm
+        angular.extend(vm, geocoder.parseAddressComponents(newPlace.address_components));
+        vm.latitude = parseFloat(newPlace.geometry.location.lat(), 10);
+        vm.longitude = parseFloat(newPlace.geometry.location.lng(), 10);
         settingsFactory.set({
-          city: $scope.city,
-          country: $scope.country,
-          latitude: $scope.latitude,
-          longitude: $scope.longitude
+          city: vm.city,
+          country: vm.country,
+          latitude: vm.latitude,
+          longitude: vm.longitude
         });
         reloadData();
         loadData();
-        $scope.models.place.place = '';
+        vm.models.place.place = '';
       }
     }
 
@@ -171,14 +176,14 @@
         // TODO: Doesn't close when picking same day after changing months
         if (moment(newDate).isSame(oldDate, 'month')) {
           newDate = new Date(newDate);
-          var YYYY = newDate.getFullYear(),
-            MM = newDate.getMonth(),
-            DD = newDate.getDate(),
-            // Datepicker sets time to midnight so get back current time for new date
-            now = new Date(),
-            hh = now.getHours(),
-            mm = now.getMinutes(),
-            ss = now.getSeconds();
+          var YYYY = newDate.getFullYear();
+          var MM = newDate.getMonth();
+          var DD = newDate.getDate();
+          // Datepicker sets time to midnight so get back current time for new date
+          var now = new Date();
+          var hh = now.getHours();
+          var mm = now.getMinutes();
+          var ss = now.getSeconds();
 
           newDate = new Date(YYYY, MM, DD, hh, mm, ss);
           settingsFactory.set({date: newDate});

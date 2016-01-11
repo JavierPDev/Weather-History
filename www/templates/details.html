@@ -1,65 +1,65 @@
-<ion-view title="{{settings.city+', '+settings.country}}">
+<ion-view title="{{vm.settings.city+', '+vm.settings.country}}">
   <ion-nav-buttons>
     <a class="button icon-left ion-chevron-left button-clear" href="#/">Back</a>
   </ion-nav-buttons>
   <ion-content overflow-scroll=”true” class="has-header">
     <ion-list>
       <ion-item>
-        <h1>{{details.year}}</h1>
+        <h1>{{vm.details.year}}</h1>
         <br>
-        <i class="wi wi-{{details.currently.icon}}"></i>
-        {{details.currently.temperature}} {{details.currently.summary}}
+        <i class="wi wi-{{vm.details.currently.icon}}"></i>
+        {{vm.details.currently.temperature}} {{vm.details.currently.summary}}
       </ion-item>
       <ion-item>  
-        Humidity: {{details.currently.humidity * 100 | number: 2}}%
+        Humidity: {{vm.details.currently.humidity * 100 | number: 2}}%
       </ion-item>
       <ion-item>  
-        High: {{details.daily.data[0].temperatureMax | number: 2}}
+        High: {{vm.details.daily.data[0].temperatureMax | number: 2}}
       </ion-item>
       <ion-item>  
-        Low: {{details.daily.data[0].temperatureMin | number: 2}}
+        Low: {{vm.details.daily.data[0].temperatureMin | number: 2}}
       </ion-item>
       <ion-item>  
-        High time: {{details.daily.data[0].temperatureMaxTime}}
+        High time: {{vm.details.daily.data[0].temperatureMaxTime}}
       </ion-item>
       <ion-item>  
-        Low time: {{details.daily.data[0].temperatureMinTime}}
+        Low time: {{vm.details.daily.data[0].temperatureMinTime}}
       </ion-item>
       <ion-item>  
-        Windspeed: {{details.currently.windSpeed}}
+        Windspeed: {{vm.details.currently.windSpeed}}
       </ion-item>
       <ion-item>  
-        Wind bearing: {{details.currently.windBearing}}
+        Wind bearing: {{vm.details.currently.windBearing}}
       </ion-item>
-      <ion-item ng-if="details.currently.visibility">  
-        Visibility: {{details.currently.visibility}}
+      <ion-item ng-if="vm.details.currently.visibility">  
+        Visibility: {{vm.details.currently.visibility}}
       </ion-item>
-      <ion-item ng-if="details.daily.data[0].precipType">  
-        Precipitation type: {{details.daily.data[0].precipType}}
+      <ion-item ng-if="vm.details.daily.data[0].precipType">  
+        Precipitation type: {{vm.details.daily.data[0].precipType}}
       </ion-item>
-      <ion-item ng-if="details.currently.precipIntensity">  
-        Precipitation intensity: {{details.currently.precipIntensity}}
+      <ion-item ng-if="vm.details.currently.precipIntensity">  
+        Precipitation intensity: {{vm.details.currently.precipIntensity}}
       </ion-item>
-      <ion-item ng-if="details.currently.precipProbability">  
-        Precipitation: {{details.currently.precipProbability * 100 | number: 2}}%
-      </ion-item>
-      <ion-item>  
-        Dew point: {{details.currently.dewPoint}}
+      <ion-item ng-if="vm.details.currently.precipProbability">  
+        Precipitation: {{vm.details.currently.precipProbability * 100 | number: 2}}%
       </ion-item>
       <ion-item>  
-        Cloud cover: {{details.currently.cloudCover}}
+        Dew point: {{vm.details.currently.dewPoint}}
       </ion-item>
       <ion-item>  
-        Pressure: {{details.currently.pressure}}
+        Cloud cover: {{vm.details.currently.cloudCover}}
       </ion-item>
       <ion-item>  
-        Moon phase: {{details.daily.data[0].moonPhase*100}}%
+        Pressure: {{vm.details.currently.pressure}}
       </ion-item>
       <ion-item>  
-        Sunrise time: {{details.daily.data[0].sunriseTime}}
+        Moon phase: {{vm.details.daily.data[0].moonPhase*100}}%
       </ion-item>
       <ion-item>  
-        Sunset time: {{details.daily.data[0].sunsetTime}}
+        Sunrise time: {{vm.details.daily.data[0].sunriseTime}}
+      </ion-item>
+      <ion-item>  
+        Sunset time: {{vm.details.daily.data[0].sunsetTime}}
       </ion-item>
     </ion-list>
   </ion-content>

@@ -1,26 +1,26 @@
-<ion-view title="{{city+', '+country}}">
+<ion-view title="{{vm.city+', '+vm.country}}">
   <ion-nav-buttons>
     <button menu-toggle="left" class="button button-icon icon ion-navicon"></button>
   </ion-nav-buttons>
 
   <!-- Enable ionic native scroll: http://blog.ionic.io/native-scrolling-in-ionic-a-tale-in-rhyme/ -->
   <ion-content overflow-scroll=”true” class="has-header">
-    <ion-refresher on-refresh="reloadData(true)">
+    <ion-refresher on-refresh="vm.reloadData(true)">
     </ion-refresher>
 
     <div class="list list-inset">
       <label class="item item-input">
         <i class="icon ion-search placeholder-icon"></i>
-        <input type="text" ng-autocomplete ng-model="models.place.place" details="models.place.details">
+        <input type="text" ng-autocomplete ng-model="vm.models.place.place" details="vm.models.place.details">
       </label>
     </div>
 
-    <div ng-controller="DatepickerModalController as datepickerModal" class="list list-inset">
-      <button ng-click="datepickerModal.openModal()" class="button button-positive"><i class="icon ion-calendar"></i> {{formattedDate}}</button>
+    <div ng-controller="DatepickerModalController as dm" class="list list-inset">
+      <button ng-click="dm.openModal()" class="button button-positive"><i class="icon ion-calendar"></i> {{vm.formattedDate}}</button>
     </div>
 
     <ion-list class="weather-list">
-      <ion-item class="card" collection-repeat="forecast in list track by $index" href="#/app/list/{{forecast.currently.time}}">
+      <ion-item class="card" collection-repeat="forecast in vm.list track by $index" href="#/app/list/{{forecast.currently.time}}">
         <h2>{{forecast.year}}</h2>
         <div class="row">
           <div class="col">
@@ -35,7 +35,7 @@
       </ion-item>
     </ion-list>
 
-    <ion-infinite-scroll on-infinite="loadData()" ng-if="canLoadData()">
+    <ion-infinite-scroll on-infinite="vm.loadData()" ng-if="vm.canLoadData()">
     </ion-infinite-scroll>
   </ion-content>
 </ion-view>

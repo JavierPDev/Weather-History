@@ -46,14 +46,16 @@ angular.module('weatherHistory', [
       url: '/app',
       abstract: true,
       templateUrl: 'templates/app.html',
-      controller: 'AppController'
+      controller: 'AppController',
+      controllerAs: 'vm'
     })
     .state('app.list', {
       url: '/list',
       views: {
         'content': {
           templateUrl: 'templates/list.html',
-          controller: 'ListController'
+          controller: 'ListController',
+          controllerAs: 'vm'
         }
       }
     })
@@ -62,7 +64,8 @@ angular.module('weatherHistory', [
       views: {
         'content': {
           templateUrl: 'templates/details.html',
-          controller: 'DetailsController'
+          controller: 'DetailsController',
+          controllerAs: 'vm'
         }
       }
     });

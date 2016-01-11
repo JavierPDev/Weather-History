@@ -18,7 +18,7 @@
             <div class="input-label">
               Date format
             </div>
-            <select ng-options="dateFormat for dateFormat in options.dateFormat" ng-model="selected.dateFormat" ng-change="saveNewSettings({dateFormat: selected.dateFormat})">
+            <select ng-options="dateFormat for dateFormat in vm.options.dateFormat" ng-model="vm.selected.dateFormat" ng-change="vm.saveNewSettings({dateFormat: vm.selected.dateFormat})">
             </select>
           </label>
         </ion-item>
@@ -27,7 +27,7 @@
             <div class="input-label">
               Unit type:
             </div>
-            <select ng-options="units for units in options.units" ng-model="selected.units" ng-change="saveNewSettings({units: selected.units})">
+            <select ng-options="units for units in vm.options.units" ng-model="vm.selected.units" ng-change="vm.saveNewSettings({units: vm.selected.units})">
             </select>
           </label>
         </ion-item>
@@ -36,7 +36,7 @@
             <div class="input-label">
               Interval:
             </div>
-            <select ng-options="interval for interval in options.interval" ng-model="selected.interval" ng-change="saveNewSettings({interval: selected.interval})">
+            <select ng-options="interval for interval in vm.options.interval" ng-model="vm.selected.interval" ng-change="vm.saveNewSettings({interval: vm.selected.interval})">
             </select>
           </label>
         </ion-item>
