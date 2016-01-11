@@ -3,14 +3,14 @@
 
   angular
     .module('weatherHistory.controllers')
-    .controller('DatepickerModalCtrl', DatepickerModalCtrl);
+    .controller('DatepickerModalController', DatepickerModalController);
 
-  DatepickerModalCtrl.$inject = [
+  DatepickerModalController.$inject = [
     '$scope',
     '$ionicModal'
   ];
 
-  function DatepickerModalCtrl($scope, $ionicModal) {
+  function DatepickerModalController($scope, $ionicModal) {
     var self = this;
 
     $ionicModal.fromTemplateUrl('templates/datepicker-modal.html', {

@@ -3,16 +3,16 @@
 
   angular
     .module('weatherHistory.controllers')
-    .controller('DetailsCtrl', DetailsCtrl);
+    .controller('DetailsController', DetailsController);
 
-  DetailsCtrl.$inject = [
+  DetailsController.$inject = [
     '$scope',
     '$state',
     'settingsFactory',
     'forecastFactory'
   ];
 
-  function DetailsCtrl($scope, $state, settingsFactory, forecastFactory) {
+  function DetailsController($scope, $state, settingsFactory, forecastFactory) {
     settingsFactory.getDeferred()
       .then(function(settings) {
         forecastFactory.getForecast(settings.latitude, settings.longitude, $state.params.time, settings)

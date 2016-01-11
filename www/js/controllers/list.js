@@ -3,9 +3,9 @@
 
   angular
     .module('weatherHistory.controllers')
-    .controller('ListCtrl', ListCtrl);
+    .controller('ListController', ListController);
 
-  ListCtrl.$inject = [
+  ListController.$inject = [
     '$scope',
     '$q',
     '$filter',
@@ -15,7 +15,7 @@
     'forecastFactory'
   ];
 
-  function ListCtrl($scope, $q, $filter, $cordovaSplashscreen, settingsFactory, geocoder, forecastFactory) {
+  function ListController($scope, $q, $filter, $cordovaSplashscreen, settingsFactory, geocoder, forecastFactory) {
     $scope.loadData = loadData;
     $scope.reloadData = reloadData;
     $scope.canLoadData = canLoadData;

@@ -3,14 +3,14 @@
 
   angular
     .module('weatherHistory.controllers')
-    .controller('AppCtrl', AppCtrl);
+    .controller('AppController', AppController);
 
-  AppCtrl.$inject = [
+  AppController.$inject = [
     '$scope',
     'settingsFactory'
   ];
 
-  function AppCtrl($scope, settingsFactory) {
+  function AppController($scope, settingsFactory) {
     $scope.selected = {};
     $scope.options = settingsFactory.options;
 
