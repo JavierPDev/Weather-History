@@ -10,37 +10,38 @@
       img-src 'self' https://maps.googleapis.com https://maps.gstatic.com https://csi.gstatic.com;
     ">
     <title>Weather History</title>
-    <link href="lib/ionic/release/css/ionic.css" rel="stylesheet">
-    <link href="lib/angularjs-datepicker/dist/angular-datepicker.min.css" rel="stylesheet">
-    <link href="css/weather-icons.css" rel="stylesheet">
-    <link href="css/ionic.app.css" rel="stylesheet">
+    <link href="assets/dependencies/ionic/release/css/ionic.css" rel="stylesheet">
+    <link href="assets/dependencies/angularjs-datepicker/dist/angular-datepicker.min.css" rel="stylesheet">
+    <link href="assets/css/weather-icons.css" rel="stylesheet">
+    <link href="assets/css/ionic.app.css" rel="stylesheet">
     <script>
       window.keys = {};
       window.keys.admob = {};
       window.keys.forecastIo = '';
       window.keys.admob.banner = '';
     </script>
-    <script src="lib/ionic/release/js/ionic.bundle.js"></script>
-    <script src="lib/ngCordova/dist/ng-cordova.js"></script>
+    <script src="assets/dependencies/ionic/release/js/ionic.bundle.js"></script>
+    <script src="assets/dependencies/ngCordova/dist/ng-cordova.js"></script>
     <script src="cordova.js"></script>
 
     <script src="https://maps.googleapis.com/maps/api/js?libraries=places&key="></script>
-    <script src="lib/ngAutocomplete/src/ngAutocomplete.js"></script>
-    <script src="lib/angular-cache/dist/angular-cache.min.js"></script>
-    <!-- <script src="./dist/main.min.js"></script> -->
-    <script src="lib/moment/min/moment.min.js"></script>
-    <script src="lib/moment-timezone/builds/moment-timezone-with-data.js"></script>
-    <script src="lib/angularjs-datepicker/dist/angular-datepicker.min.js"></script>
-    <script src="js/app.js"></script>
-    <script src="js/controllers/controllers.js"></script>
-    <script src="js/services/services.js"></script>
-    <script src="js/controllers/app.js"></script>
-    <script src="js/controllers/list.js"></script>
-    <script src="js/controllers/datepicker-modal.js"></script>
-    <script src="js/controllers/details.js"></script>
-    <script src="js/services/settings.js"></script>
-    <script src="js/services/geocoder.js"></script>
-    <script src="js/services/forecast.js"></script>
+    <script src="assets/dependencies/ngAutocomplete/src/ngAutocomplete.js"></script>
+    <script src="assets/dependencies/angular-cache/dist/angular-cache.min.js"></script>
+    <!-- <script src="dist/main.min.js"></script> -->
+    <script src="assets/dependencies/moment/min/moment.min.js"></script>
+    <script src="assets/dependencies/moment-timezone/builds/moment-timezone-with-data.js"></script>
+    <script src="assets/dependencies/angularjs-datepicker/dist/angular-datepicker.min.js"></script>
+    <script src="app.js"></script>
+    <script src="common/common.module.js"></script>
+    <script src="common/controllers/app.controller.js"></script>
+    <script src="common/controllers/datepicker.modal.js"></script>
+    <script src="common/services/settings.js"></script>
+    <script src="common/services/geocoder.js"></script>
+    <script src="common/services/forecast.js"></script>
+    <script src="details/details.module.js"></script>
+    <script src="details/controllers/details.js"></script>
+    <script src="list/list.module.js"></script>
+    <script src="list/controllers/list.js"></script>
   </head>
 
   <body ng-app="weatherHistory">
