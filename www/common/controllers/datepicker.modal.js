@@ -11,28 +11,37 @@
   ];
 
   function DatepickerModalController($scope, $ionicModal) {
-    var self = this;
+    var vm = this;
+    vm.closeModal = closeModal;
+    vm.openModal = openModal;
 
-    $ionicModal.fromTemplateUrl('common/views/datepicker.modal.html', {
-      scope: $scope,
-      animation: 'slide-in-up'
-    }).then(function(modal) {
-      self.modal = modal;
-    });
+    activate();
 
-    self.openModal = function() {
-      self.modal.show();
-    };
+    //////////////
+    
+    function activate() {
+      $ionicModal.fromTemplateUrl('common/views/datepicker.modal.html', {
+        scope: $scope,
+        animation: 'slide-in-up'
+      }).then(function(modal) {
+        vm.modal = modal;
+      });
 
-    self.closeModal = function() {
-      self.modal.hide();
-    };
+      //Cleanup the modal when we're done with it!
+      $scope.$on('$destroy', function() {
+        vm.modal.remove();
+      });
 
-    //Cleanup the modal when we're done with it!
-    $scope.$on('$destroy', function() {
-      self.modal.remove();
-    });
-
-    $scope.$on('DatepickerModal:closeModal', self.closeModal);
+      $scope.$on('DatepickerModal:closeModal', vm.closeModal);
+      }
     }
+
+    function openModal() {
+      vm.modal.show();
+    }
+
+    function closeModal() {
+      vm.modal.hide();
+    }
+
 })();
