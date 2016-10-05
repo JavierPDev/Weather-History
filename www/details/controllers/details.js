@@ -21,6 +21,9 @@
     function activate() {
       settingsFactory.getDeferred()
         .then(function(settings) {
+          vm.city = settings.city;
+          vm.country = settings.country;
+
           forecastFactory.getForecast(settings.latitude, settings.longitude, $state.params.time, settings)
             .then(function (forecast) {
               vm.details = forecast;
