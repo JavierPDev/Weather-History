@@ -27,13 +27,12 @@
         vm.modal = modal;
       });
 
-      //Cleanup the modal when we're done with it!
+      // Cleanup the modal when we're done with it!
       $scope.$on('$destroy', function() {
         vm.modal.remove();
       });
 
       $scope.$on('DatepickerModal:closeModal', vm.closeModal);
-      }
     }
 
     function openModal() {
@@ -43,5 +42,5 @@
     function closeModal() {
       vm.modal.hide();
     }
-
+  }
 })();
