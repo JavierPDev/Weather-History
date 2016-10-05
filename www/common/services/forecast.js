@@ -45,11 +45,11 @@
       $http
         .jsonp(url, {
           cache: forecastCache,
-          params: params
+          params: params,
+          transformResponse: transformResponse
         })
         .then(function(res) {
-          var forecast = processData(res.data, params.timezone.timezoneId);
-          deferred.resolve(forecast);
+          deferred.resolve(res.data);
         });
       return deferred.promise;
     }
@@ -65,15 +65,14 @@
      * Process forecast data into human readable format
      *
      * @param {Object} forecast - Forecast data to process
-     * @param {String} timezone - Timezone of forecast
      * @return {Object} forecast - Forecast data formatted for user
      */
-    function processData(forecast, timezone) {
+    function transformResponse(forecast) {
       forecast.year = parseInt(moment.unix(forecast.currently.time).format('YYYY'), 10);
-      forecast.daily.data[0].temperatureMaxTime = formatDate(forecast.daily.data[0].temperatureMaxTime, timezone);
-      forecast.daily.data[0].temperatureMinTime = formatDate(forecast.daily.data[0].temperatureMinTime, timezone);
-      forecast.daily.data[0].sunriseTime = formatDate(forecast.daily.data[0].sunriseTime, timezone);
-      forecast.daily.data[0].sunsetTime = formatDate(forecast.daily.data[0].sunsetTime, timezone);
+      forecast.daily.data[0].temperatureMaxTime = formatDate(forecast.daily.data[0].temperatureMaxTime, forecast.timezone);
+      forecast.daily.data[0].temperatureMinTime = formatDate(forecast.daily.data[0].temperatureMinTime, forecast.timezone);
+      forecast.daily.data[0].sunriseTime = formatDate(forecast.daily.data[0].sunriseTime, forecast.timezone);
+      forecast.daily.data[0].sunsetTime = formatDate(forecast.daily.data[0].sunsetTime, forecast.timezone);
       forecast.currently.icon = renameIcons(forecast.currently.icon);
       return forecast;
     }
