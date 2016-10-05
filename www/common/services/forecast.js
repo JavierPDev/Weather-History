@@ -17,7 +17,7 @@
     service.clearCache = clearCache;
     service.getForecast = getForecast;
 
-    var baseUrl = 'https://api.forecast.io/forecast/'+FORECASTIO_API_KEY+'/';
+    var baseUrl = 'https://api.darksky.net/forecast/'+FORECASTIO_API_KEY+'/';
     var MIN = 1000 * 60;
     var forecastCache = CacheFactory.createCache('forecastCache', {
       maxAge: 15 * MIN,

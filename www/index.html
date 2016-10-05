@@ -5,8 +5,8 @@
     <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
     <meta http-equiv="Content-Security-Policy" content="
       default-src 'self' 'unsafe-inline';
-      script-src 'self' 'unsafe-inline' 'unsafe-eval' https://maps.googleapis.com https://maps.gstatic.com http://localhost:35729 https://csi.gstatic.com https://api.forecast.io;
-      connect-src 'self' 'unsafe-inline' 'unsafe-eval' ws://localhost:8200 http://localhost:8200 ws://localhost:35729 https://maps.googleapis.com https://maps.gstatic.com https://csi.gstatic.com https://api.forecast.io;
+      script-src 'self' 'unsafe-inline' 'unsafe-eval' https://maps.googleapis.com https://maps.gstatic.com http://localhost:35729 https://csi.gstatic.com https://api.darksky.net;
+      connect-src 'self' 'unsafe-inline' 'unsafe-eval' ws://localhost:8200 http://localhost:8200 ws://localhost:35729 https://maps.googleapis.com https://maps.gstatic.com https://csi.gstatic.com https://api.darksky.net;
       img-src 'self' https://maps.googleapis.com https://maps.gstatic.com https://csi.gstatic.com;
     ">
     <title>Weather History</title>
@@ -17,7 +17,7 @@
     <script>
       window.keys = {};
       window.keys.admob = {};
-      window.keys.forecastIo = '';
+      window.keys.forecastIo = '9e9741e9fd11d5fb18ec7986f6f5d5ec';
       window.keys.admob.banner = '';
     </script>
     <script src="assets/dependencies/ionic/release/js/ionic.bundle.js"></script>
